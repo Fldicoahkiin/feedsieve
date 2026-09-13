@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { getRankedData } from '@/site/data.functions';
 import { pageHead } from '@/site/seo';
-import { ListsTabs, ListPageHeader, HelpIcon } from '@/site/pages/lists/lists-common';
+import { ListPageHeader, HelpIcon } from '@/site/pages/lists/lists-common';
 import { RankedPanel } from '@/site/pages/lists/RankedPanel';
 
 export const Route = createFileRoute('/_shell/lists/ranked')({
@@ -25,9 +25,8 @@ function RankedRoute() {
   return (
     <main className="mx-auto max-w-5xl px-[clamp(18px,2.2vw,34px)] pb-16 pt-8">
       <ListPageHeader
-        title="排位赛"
+        title="打野排位天梯榜"
         meta="网页纯观看 · 认领与改名在扩展弹窗「打野」"
-        tabs={<ListsTabs />}
         aside={
           <HelpIcon ariaLabel="排位赛说明">
             按共识击杀计分：确认击杀 +1、首杀 +1、误伤 −2，误拉黑不计分反而扣分。

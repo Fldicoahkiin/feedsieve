@@ -1,18 +1,26 @@
 import { Link } from '@tanstack/react-router';
 import {
-  ShieldAlert,
-  HelpCircle,
   Download,
-  Settings2,
-  Trophy,
   PlayCircle,
+  ShieldAlert,
+  Trophy,
+  Settings2,
+  HelpCircle,
   ExternalLink,
   ChevronDown,
+  ShieldCheck,
+  CheckCircle2,
+  AlertTriangle,
+  Layers,
+  Flame,
+  Zap,
 } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { CHROME_STORE_URL, GITHUB_URL } from '../site';
 
 /**
- * 教程页：上手指南、批量拉黑防封安全边界、常见问题解答。
+ * 教程页：全平台安装、核心理念、四种实战流派、400发防封安全边界、
+ * 打野天梯榜机制、防误伤三重金钟罩、进阶设置与故障排查。
  */
 export default function GuidePage() {
   return (
@@ -20,13 +28,14 @@ export default function GuidePage() {
       {/* 头部标题与定位 */}
       <div>
         <div className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold-surface px-3.5 py-1 text-xs font-semibold text-gold">
-          <span>📖 新手与进阶指南</span>
+          <Flame className="size-3.5" />
+          <span>福滤娃完整实战与进阶手册</span>
         </div>
         <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl text-ink">
-          福滤娃使用教程
+          福滤娃使用教程与实战指南
         </h1>
-        <p className="mt-2 text-base text-mist">
-          从安装配置到打野冲榜，带你彻底告别 X 评论区黄推与牛皮癣。
+        <p className="mt-2 text-base text-mist leading-relaxed">
+          从安装配置、四种清理流派、400 发防封机制，到打野排位冲榜与故障排查，带你彻底夺回清爽干净的 X 时间线。
         </p>
       </div>
 
@@ -34,11 +43,13 @@ export default function GuidePage() {
       <nav className="mt-6 flex flex-wrap gap-2 text-sm" aria-label="教程目录">
         {[
           ['安装方式', 'install'],
+          ['核心理念', 'concept'],
           ['上手四步', 'start'],
           ['打野排位', 'hunting'],
-          ['关键设置', 'settings'],
           ['400发防封边界', 'safety'],
-          ['常见问题', 'faq'],
+          ['防误伤金钟罩', 'shield'],
+          ['设置与迁移', 'settings'],
+          ['常见问题与排查', 'faq'],
         ].map(([label, id]) => (
           <a
             key={id}
@@ -54,107 +65,253 @@ export default function GuidePage() {
       <section id="install" className="mt-12 scroll-mt-20">
         <div className="flex items-center gap-2 text-xl font-bold text-ink">
           <Download className="size-5 text-gold" />
-          <h2>安装方式</h2>
+          <h2>一、全平台安装与初始化</h2>
         </div>
 
         <div className="mt-4 overflow-hidden rounded-2xl border border-line/70 bg-surface shadow-[var(--panel-elev)]">
           <table className="w-full text-left text-sm" data-testid="guide-table">
             <tbody className="divide-y divide-line/50">
-              <GuideRow label="Chrome 应用商店（推荐）">
-                <div className="flex flex-wrap items-center gap-3">
-                  <a
-                    href={CHROME_STORE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 font-semibold text-gold hover:underline underline-offset-4"
-                  >
-                    <span>点「添加至 Chrome」，自动更新</span>
-                    <ExternalLink className="size-3.5" />
-                  </a>
-                  <span className="rounded bg-gold-surface px-2 py-0.5 text-xs font-medium text-gold">
-                    官方审核 · 一键同步
-                  </span>
+              <GuideRow label="Chrome 应用商店（强烈推荐）">
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <a
+                      href={CHROME_STORE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 font-semibold text-gold hover:underline underline-offset-4"
+                    >
+                      <span>点「添加至 Chrome」，享受自动后台更新</span>
+                      <ExternalLink className="size-3.5" />
+                    </a>
+                    <span className="rounded bg-gold-surface px-2 py-0.5 text-xs font-medium text-gold">
+                      官方审核 · 自动同步
+                    </span>
+                  </div>
+                  <p className="text-xs text-mist leading-relaxed">
+                    Edge、Brave、Arc、Vivaldi、Opera 等 Chromium 内核浏览器均支持。Edge 用户首次打开页面点顶部提示「允许来自其他应用商店的扩展」即可。
+                  </p>
                 </div>
               </GuideRow>
-              <GuideRow label="GitHub Releases">
-                <div className="leading-relaxed">
-                  <a
-                    href={`${GITHUB_URL}/releases`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-ink underline-offset-4 hover:underline"
-                  >
-                    下载 ZIP 解压
-                  </a>{' '}
-                  → 地址栏输入{' '}
-                  <code className="rounded bg-soft-surface px-1.5 py-0.5 text-xs font-mono text-ink">
-                    chrome://extensions
-                  </code>{' '}
-                  → 开启右上角「开发者模式」 → 点击「加载已解压的扩展程序」
+
+              <GuideRow label="GitHub Releases 离线包">
+                <div className="space-y-1.5 leading-relaxed text-xs sm:text-sm">
+                  <div>
+                    1. 前往{' '}
+                    <a
+                      href={`${GITHUB_URL}/releases`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-ink underline-offset-4 hover:underline"
+                    >
+                      GitHub Releases
+                    </a>{' '}
+                    下载最新 <code className="rounded bg-soft-surface px-1.5 py-0.5 font-mono">feedsieve-chrome.zip</code> 并解压至本地固定文件夹；
+                  </div>
+                  <div>
+                    2. 打开浏览器地址栏访问{' '}
+                    <code className="rounded bg-soft-surface px-1.5 py-0.5 font-mono text-ink">
+                      chrome://extensions
+                    </code>；
+                  </div>
+                  <div>
+                    3. 勾选右上角<strong>「开发者模式」</strong>开关；
+                  </div>
+                  <div>
+                    4. 点击左上角<strong>「加载已解压的扩展程序」</strong>，选择刚解压的文件夹即可。
+                  </div>
                 </div>
               </GuideRow>
-              <GuideRow label="从源码构建">
-                <div className="leading-relaxed">
-                  终端执行{' '}
-                  <code className="rounded bg-soft-surface px-1.5 py-0.5 text-xs font-mono text-ink">
-                    pnpm install &amp;&amp; pnpm build:extension
-                  </code>
-                  ，在浏览器加载输出目录{' '}
-                  <code className="rounded bg-soft-surface px-1.5 py-0.5 text-xs font-mono text-ink">
-                    apps/extension/.output/chrome-mv3
-                  </code>
+
+              <GuideRow label="从源码自构建（极客）">
+                <div className="space-y-1 text-xs sm:text-sm">
+                  <div>克隆仓库并在根目录运行：</div>
+                  <pre className="overflow-x-auto rounded-xl bg-soft-surface p-3 font-mono text-xs text-ink">
+                    pnpm install && pnpm build:extension
+                  </pre>
+                  <div className="text-xs text-mist">
+                    产物将生成在 <code className="font-mono">apps/extension/.output/chrome-mv3</code>，按离线包方式加载即可。
+                  </div>
                 </div>
               </GuideRow>
             </tbody>
           </table>
         </div>
-        <p className="mt-3 text-xs text-mist leading-relaxed">
-          💡 Edge / Brave / Arc 等 Chromium 浏览器均可直接安装商店版。装好即用，无需配置 API Key 或登录任何第三方平台。
-        </p>
+
+        <div className="mt-4 rounded-xl border border-line/60 bg-soft-surface p-4 text-xs text-mist leading-relaxed">
+          <strong className="text-ink">💡 装好后的第一件事：</strong>
+          点击浏览器右上角的「拼图图标」🧩，将 <strong>福滤娃 FeedSieve</strong> 图标固定（Pin）到浏览器工具栏。此时打开任意 <code className="text-ink font-mono">x.com</code> 页面，扩展会自动激活，<strong>无需注册任何账号、无需配置任何 API Key</strong>。
+        </div>
       </section>
 
-      {/* 2. 上手四步 */}
+      {/* 2. 核心理念与黄框识别 */}
+      <section id="concept" className="mt-14 scroll-mt-20">
+        <div className="flex items-center gap-2 text-xl font-bold text-ink">
+          <Layers className="size-5 text-gold" />
+          <h2>二、核心设计理念：只框不藏</h2>
+        </div>
+
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl border border-line/70 bg-surface p-5 shadow-[var(--panel-elev)] space-y-2">
+            <h3 className="font-bold text-ink text-sm flex items-center gap-2">
+              <CheckCircle2 className="size-4 text-emerald-500" />
+              为什么坚持“只框不藏”？
+            </h3>
+            <p className="text-xs text-mist leading-relaxed">
+              很多插件喜欢粗暴地搞 <code className="font-mono">display: none</code>，把你屏幕上的推文节点吞掉。这不仅是掩耳盗铃（换个手机照样骑脸），而且会造成极严重的“信息盲盒”——你根本不知道它吞了什么、为什么吞，甚至可能吞掉正常博主的优质反驳。福滤娃看到什么就标注什么，机器与算法是雷达，最终决定权永远在你自己手里。
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-line/70 bg-surface p-5 shadow-[var(--panel-elev)] space-y-2">
+            <h3 className="font-bold text-ink text-sm flex items-center gap-2">
+              <CheckCircle2 className="size-4 text-gold" />
+              黄框上的徽章看什么？
+            </h3>
+            <p className="text-xs text-mist leading-relaxed">
+              高置信垃圾账号被醒目黄框标出后，推文底部会附带一行黄色依据徽章。例如：<code className="rounded bg-gold/15 px-1.5 py-0.5 text-gold-deep font-semibold">黄推 / 成人引流 · 命中话术库</code>、<code className="rounded bg-gold/15 px-1.5 py-0.5 text-gold-deep font-semibold">搬运套路复读机</code> 或 <code className="rounded bg-gold/15 px-1.5 py-0.5 text-gold-deep font-semibold">外链诈骗跳转</code>。判定依据完全明牌，杜绝莫须有。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. 上手四步：实战流派 */}
       <section id="start" className="mt-14 scroll-mt-20">
         <div className="flex items-center gap-2 text-xl font-bold text-ink">
           <PlayCircle className="size-5 text-gold" />
-          <h2>上手四步</h2>
+          <h2>三、日常清理四种实战流派</h2>
         </div>
+
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
           <StepCard
             step="01"
-            title="刷 X，看黄框"
-            desc="打开 x.com 正常刷推。高置信垃圾账号被醒目黄框标出，底部注明判定理由（机器人、色情引流、外链欺诈等）。推文原文不被隐藏，内容看得一清二楚。"
+            title="随缘单点流（顺手送走）"
+            badge="高频日常"
+            desc="日常刷推滚动时间线，如果看到被黄框标出的垃圾账号，推文右上角直接提供「顺手拉黑」按钮。看一眼证据，随手一点，立即调用 X 官方 Block 接口，手机端与平板端即刻同步消失。"
           />
           <StepCard
             step="02"
-            title="单个顺手送走"
-            desc="点击黄框右上角的「顺手拉黑」：直接调用你已登录 X 会话的内部 Block 接口，手机与 iPad 客户端即刻全端同步消失，永绝后患。"
+            title="批量扫荡流（攒一批一键送走）"
+            badge="强迫症狂喜"
+            desc="时间线上所有进入过屏幕视野的黄标账号，会自动暂存进扩展待拉黑队列。刷完推文后，点击右上角扩展图标，核对列表后点击「一键拉黑全部」，扩展将自动以拟人化安全节奏逐个执行出弹。"
           />
           <StepCard
             step="03"
-            title="攒一批一键送走"
-            desc="浏览过程中被黄标的账号会自动暂存至待处理列表。打开扩展弹窗点「一键拉黑」，按安全节奏逐个执行，成功即刻移除，失败会明明白白提示原因。"
+            title="手动补刀流（标记漏网之鱼）"
+            badge="精准猎杀"
+            desc="新型伪装变种或漏网的灰产账号？点击该推文右上角的菜单图标「···」，选择「标记垃圾并拉黑」。系统在本地即刻为你屏蔽，同时提取脱敏话术特征，打野积分自动计入。"
           />
           <StepCard
             step="04"
-            title="漏网手动标，误伤一秒救"
-            desc="看到漏网黄推？任意推文菜单点「标记垃圾并拉黑」，系统自动提取特征；若不小心误伤了好友，在已拉黑列表点「放回来」即可秒级解除屏蔽。"
+            title="瞬时撤销流（误伤一秒救回）"
+            badge="后悔药"
+            desc="手滑误拉黑了感兴趣的博主或朋友？完全不用慌。打开扩展弹窗进入「已拉黑」列表，找到对应账号点击「放回来」，系统秒级调用 Unblock 接口解除屏蔽并撤回，安全感拉满。"
           />
         </div>
       </section>
 
-      {/* 3. 打野排位 */}
+      {/* 4. 400 发防封与安全边界 */}
+      <section id="safety" className="mt-14 scroll-mt-20">
+        <div className="flex items-center gap-2 text-xl font-bold text-ink">
+          <ShieldAlert className="size-5 text-gold" />
+          <h2>四、批量拉黑的安全边界（400 发防封风控机制）</h2>
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-6 dark:bg-amber-500/10 space-y-4">
+          <div>
+            <h3 className="font-bold text-ink text-base flex items-center gap-2">
+              <AlertTriangle className="size-4 text-gold" />
+              推特天天治不了批量黄推，但对正常用户的高频拉黑抓得极严！
+            </h3>
+            <p className="mt-2 text-xs sm:text-sm text-mist leading-relaxed">
+              拉黑动作走的是你在浏览器当前已登录的合法推特 Session，这与你手动在网页上点屏蔽是完全相同的数据通道。但推特内部对普通用户的写操作有非常严格的限流阈值。如果脚本毫无顾忌地几秒内发几百个请求，你的大号大概率会被官方暂时限流（429）甚至风控限制。
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-3 text-xs">
+            <div className="rounded-xl border border-line/70 bg-surface p-4 space-y-1.5">
+              <div className="font-bold text-ink">🎯 400 发 / 24 小时配额</div>
+              <p className="text-mist leading-relaxed">
+                本地队列严格锁定 24 小时滑动窗口内最多 400 发拉黑配额。配额用尽后队列自动休眠暂停，直到窗口释放。大名单请分几天跑完，别指望一晚把全网清零。
+              </p>
+            </div>
+            <div className="rounded-xl border border-line/70 bg-surface p-4 space-y-1.5">
+              <div className="font-bold text-ink">🎲 拟人化随机时间抖动</div>
+              <p className="text-mist leading-relaxed">
+                每次批量拉黑之间注入 800ms ~ 2500ms 的随机延迟抖动（Jitter），彻底打碎机械高频特征，模拟真实用户的浏览与点击习惯。
+              </p>
+            </div>
+            <div className="rounded-xl border border-line/70 bg-surface p-4 space-y-1.5">
+              <div className="font-bold text-ink">🛑 429 智能装死熔断</div>
+              <p className="text-mist leading-relaxed">
+                一旦 X 接口返回 429 Too Many Requests 限流响应，扩展立即启动保护熔断进入休眠冷却，绝不拿你的推特大号去硬赌风控底线。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. 防误伤三重金钟罩 */}
+      <section id="shield" className="mt-14 scroll-mt-20">
+        <div className="flex items-center gap-2 text-xl font-bold text-ink">
+          <ShieldCheck className="size-5 text-gold" />
+          <h2>五、防误伤三重金钟罩</h2>
+        </div>
+
+        <div className="mt-4 space-y-3">
+          <div className="rounded-2xl border border-line/70 bg-surface p-5 shadow-[var(--panel-elev)]">
+            <div className="flex items-center gap-2 font-bold text-sm text-ink">
+              <span className="rounded-full bg-emerald-500/15 text-emerald-600 px-2 py-0.5 text-xs">
+                第一重
+              </span>
+              <span>关注列表本地自动豁免（免死金牌）</span>
+            </div>
+            <p className="mt-2 text-xs text-mist leading-relaxed">
+              打开扩展设置页，点击「同步关注列表」。扩展会自动将你当前所有的 Following（关注博主）存入本地免检白名单中。在本地检测流水线中，关注列表拥有<strong>最高绝对豁免权</strong>，任何检测规则或黑名单都绝不触碰你关注的人。关注数据纯本地保存，永不上传服务器。
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-line/70 bg-surface p-5 shadow-[var(--panel-elev)]">
+            <div className="flex items-center gap-2 font-bold text-sm text-ink">
+              <span className="rounded-full bg-gold-surface text-gold px-2 py-0.5 text-xs">
+                第二重
+              </span>
+              <span>已拉黑面板「放回来」秒级撤销</span>
+            </div>
+            <p className="mt-2 text-xs text-mist leading-relaxed">
+              扩展弹窗提供独立的「已拉黑」历史列表。所有通过扩展执行的拉黑均有痕迹，支持输入账号关键词快速搜索；点击任意账号右侧的「放回来」按钮，立即撤销拉黑并在推特端恢复正常。
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-line/70 bg-surface p-5 shadow-[var(--panel-elev)]">
+            <div className="flex items-center gap-2 font-bold text-sm text-ink">
+              <span className="rounded-full bg-sky-500/15 text-sky-600 px-2 py-0.5 text-xs">
+                第三重
+              </span>
+              <span>社区抢救名单与公开申诉入册</span>
+            </div>
+            <p className="mt-2 text-xs text-mist leading-relaxed">
+              社区如果发现某位正常博主被恶意刷票误伤，其他用户在扩展内点击抢救，系统根据净票机制（拉黑票 − 抢救票 &lt; 3）自动将其从全量黑名单中剔除；博主本人也可以在{' '}
+              <Link to="/lists/apply" className="text-gold font-semibold hover:underline">
+                官网申诉页
+              </Link>{' '}
+              发起申请，经邮箱验证后进入维护者人工复核队列解封。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. 打野排位天梯 */}
       <section id="hunting" className="mt-14 scroll-mt-20">
         <div className="flex items-center gap-2 text-xl font-bold text-ink">
           <Trophy className="size-5 text-gold" />
-          <h2>打野排位</h2>
+          <h2>六、打野排位赛机制全解</h2>
         </div>
-        <div className="mt-4 rounded-2xl border border-line/70 bg-surface p-6 shadow-[var(--panel-elev)]">
+
+        <div className="mt-4 rounded-2xl border border-line/70 bg-surface p-6 shadow-[var(--panel-elev)] space-y-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-line/50 pb-5">
             <div>
               <h3 className="text-base font-bold text-ink">清朗推特，社区闯关</h3>
               <p className="mt-1 text-xs text-mist leading-relaxed">
-                打开扩展弹窗「打野」选项卡，可查看个人战报（确认击杀数、命中率、段位称号）与实时排位榜。
+                一个人清推是枯燥的，成百上千人打野是热血的。打开扩展弹窗「打野」选项卡，可查看个人战报（确认击杀数、命中率、段位称号）与实时排位榜。
               </p>
             </div>
             <Link
@@ -164,45 +321,45 @@ export default function GuidePage() {
               查看全网天梯周榜 →
             </Link>
           </div>
-          <div className="mt-5 grid gap-4 sm:grid-cols-3 text-xs">
-            <div className="rounded-xl bg-soft-surface p-3.5">
-              <div className="font-bold text-ink">积分规则</div>
-              <div className="mt-1 text-mist leading-relaxed">
-                确认击杀 +1 分，全网首杀额外 +1 分；若经社区核实为误杀，不仅不计分反而倒扣 2 分。
-              </div>
+
+          <div className="grid gap-3 sm:grid-cols-3 text-xs">
+            <div className="rounded-xl bg-soft-surface p-4 space-y-1.5">
+              <div className="font-bold text-ink">🎯 积分计算法则</div>
+              <p className="text-mist leading-relaxed">
+                • <strong>确认击杀</strong>：+1 分（拉黑与社区名单形成共识）<br />
+                • <strong>全网首杀</strong>：额外 +1 分（首次上报有效样本）<br />
+                • <strong>误杀惩罚</strong>：倒扣 −2 分（误伤扣分翻倍，杜绝滥杀保证准召率）
+              </p>
             </div>
-            <div className="rounded-xl bg-soft-surface p-3.5">
-              <div className="font-bold text-ink">隐私与认领</div>
-              <div className="mt-1 text-mist leading-relaxed">
-                上榜默认完全匿名。想公开展示名字的打野玩家，可在弹窗内认领档案并通过邮箱验证，自愿绑定个人 @handle。
-              </div>
+            <div className="rounded-xl bg-soft-surface p-4 space-y-1.5">
+              <div className="font-bold text-ink">🔒 默认全匿名打野</div>
+              <p className="text-mist leading-relaxed">
+                上榜默认完全匿名（展示为如 <code className="font-mono">猎手#3a8f</code>）。想在天梯榜露脸的大神，可在弹窗内认领档案并通过邮箱验证，自愿绑定个人推特 @handle。
+              </p>
             </div>
-            <div className="rounded-xl bg-soft-surface p-3.5">
-              <div className="font-bold text-ink">周赛季荣誉</div>
-              <div className="mt-1 text-mist leading-relaxed">
-                每周一按 ISO 周结算。周榜 Top 3 且整体命中率 ≥80% 的玩家，将永久获得「猎黄人」或「七娃镇海」社区徽章。
-              </div>
+            <div className="rounded-xl bg-soft-surface p-4 space-y-1.5">
+              <div className="font-bold text-ink">👑 赛季荣誉勋章</div>
+              <p className="text-mist leading-relaxed">
+                按 ISO 周结算。周榜 Top 3 且整体命中率 ≥80% 的玩家，将永久获得「猎黄人」或「七娃镇海」社区段位徽标，公示在全网天梯榜中。
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. 设置 */}
+      {/* 7. 关键设置与配置迁移 */}
       <section id="settings" className="mt-14 scroll-mt-20">
         <div className="flex items-center gap-2 text-xl font-bold text-ink">
           <Settings2 className="size-5 text-gold" />
-          <h2>核心设置项</h2>
+          <h2>七、关键设置与配置迁移</h2>
         </div>
+
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <SettingItem
-            title="同步关注列表（防误伤金钟罩）"
-            desc="一键将你的关注列表存为本地免检名单，自动排除在一切标记与拉黑之外。数据只在本地匹配，永不上传服务器。"
-          />
-          <SettingItem
-            title="订阅关键词库"
+            title="词库包按需勾选"
             desc={
               <>
-                官方提供 8 个场景词库共 778 条公开规则，默认仅启用「黄推/成人引流」，其他分类按需自选。所有词库明牌公示在{' '}
+                官方提供 8 个场景规则包共 778 条公开规则（黄推/成人引流、套路引流、机器人特征等），默认仅开启「黄推引流」，其他分类随心按需订阅。所有规则公开在{' '}
                 <Link to="/lists/keywords" className="font-semibold text-gold hover:underline">
                   开源词库
                 </Link>
@@ -211,79 +368,98 @@ export default function GuidePage() {
             }
           />
           <SettingItem
-            title="识别灵敏度档位"
-            desc="提供 清爽 / 标准 / 大扫除 三档灵敏度，仅影响提示阈值。无论哪一档，黄框标注都绝不执行任何无人值守的静默拉黑。"
+            title="识别灵敏度三档调节"
+            desc="提供 清爽 / 标准 / 大扫除 三档。清爽档只抓高置信度核心特征；大扫除档覆盖更多模糊变种。无论哪一档，黄框标注在任何时候都绝不执行任何静默拉黑。"
           />
           <SettingItem
-            title="本地配置备份与迁移"
-            desc="支持将本地白名单与自定义规则导出为 JSON 文件，换电脑一键导入合并，无须重新配置，且不包含任何推特登录态。"
+            title="配置与白名单本地导出"
+            desc="支持将你在本地沉淀的自定义白名单、已拉黑记录与偏好设置一键导出为纯 JSON 文件，数据干净明牌，绝不夹带任何推特 Session 凭证。"
+          />
+          <SettingItem
+            title="更换设备一键合并还原"
+            desc="换新电脑或在新浏览器安装扩展后，在设置页点击「导入配置」选择此前导出的 JSON 文件，即可秒级还原你的所有保护白名单与个人拉黑规则。"
           />
         </div>
       </section>
 
-      {/* 5. 批量拉黑的安全边界 */}
-      <section id="safety" className="mt-14 scroll-mt-20">
-        <div className="flex items-center gap-2 text-xl font-bold text-ink">
-          <ShieldAlert className="size-5 text-gold" />
-          <h2>批量拉黑的安全边界</h2>
-        </div>
-        <div className="mt-4 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-6 dark:bg-amber-500/10">
-          <h3 className="font-bold text-ink text-base">400 发子弹配额与 429 智能休眠熔断</h3>
-          <p className="mt-2 text-sm text-mist leading-relaxed">
-            拉黑请求走的是你浏览器当前登录的 X 正常会话，与你在网页上手动点屏蔽属于完全相同的数据通道。推特天天治不了批量黄推，但对正常用户的频繁操作抓得极严。
-          </p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 text-xs">
-            <div className="rounded-xl border border-line/70 bg-surface p-4">
-              <span className="font-bold text-ink">🎯 400 发 / 24 小时滚动配额</span>
-              <p className="mt-1 text-mist leading-relaxed">
-                本地队列内置 24 小时配额上限。配额耗尽后自动暂停，避免短时间发起超量请求引发推特风控。大名单建议分几天逐步送走。
-              </p>
-            </div>
-            <div className="rounded-xl border border-line/70 bg-surface p-4">
-              <span className="font-bold text-ink">⚡️ 429 自动装死熔断与随机抖动</span>
-              <p className="mt-1 text-mist leading-relaxed">
-                每次拉黑操作均附带随机时间抖动；一旦收到 X 接口返回 429 限流响应，立即启动休眠装死，绝不拿你的大号去赌风控。
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. 常见问题 */}
+      {/* 8. 常见问题排查 FAQ */}
       <section id="faq" className="mt-14 scroll-mt-20">
         <div className="flex items-center gap-2 text-xl font-bold text-ink">
           <HelpCircle className="size-5 text-gold" />
-          <h2>常见问题解答</h2>
+          <h2>八、常见问题与故障排查 FAQ</h2>
         </div>
+
         <div className="mt-4 space-y-3">
           <FaqItem
-            q="为什么是原生拉黑，而不是本地隐藏（display: none）？"
-            a="本地隐藏纯属鸵鸟战术，只在当前浏览器把 DOM 节点 display: none 遮住，换到手机或平板刷推依然被黄推骑脸。福滤娃直接调取 X 官方 Block 接口，全端设备立刻同步消失，彻底切断私信与骚扰通知。"
-          />
-          <FaqItem
-            q="会封我自己的推特账号吗？"
-            a="我们比你更怕被封号。福滤娃内置 400 发子弹配额限制、拟人化时间抖动；遭遇 429 自动进入装死熔断，绝不拿大号去试探推特风控底线。"
-          />
-          <FaqItem
-            q="需要购买或申请推特开发者 API 吗？"
-            a="完全不需要。拉黑操作全程在你本地已登录的 X 会话内完成，福滤娃服务器连你的账号密码长什么样都不知道。"
-          />
-          <FaqItem
-            q="我的推文、浏览历史或密码会被上传吗？"
-            a="绝对不会。所有检测规则与正则在本地沙箱运算，推文原文永不出设备；社区名单只在上报时包含账号 handle、分类标签、话术哈希指纹和外链域名。"
-          />
-          <FaqItem
-            q="如果发现误标了正常博主怎么办？"
+            q="刷推时没有看到黄框标出，怎么排查？"
             a={
-              <>
-                插件内置已拉黑撤销功能，点「放回来」一键恢复。如果是社区名单误标，可前往{' '}
-                <Link to="/lists/apply" className="font-semibold text-gold hover:underline">
-                  官网申诉页
-                </Link>{' '}
-                提交申请，邮箱验证后由维护者核验解封。
-              </>
+              <div className="space-y-1.5">
+                <p>请按以下步骤快速排查：</p>
+                <p>① 确认浏览器右上角的福滤娃扩展图标处于彩色激活状态；</p>
+                <p>② 刷新当前推特页面（按 Ctrl+F5 或 Cmd+Shift+R 硬刷新一次）；</p>
+                <p>③ 检查设置中是否开启了关键词词库包（默认已开启成人引流包）；</p>
+                <p>④ 检查被测试的账号是否已经在你的「关注列表」中（你关注的人享有本地免死金牌，绝对不会被黄框标出）。</p>
+              </div>
             }
           />
+
+          <FaqItem
+            q="为什么坚持是原生拉黑，而不是本地隐藏（CSS display: none）？"
+            a="本地隐藏纯属鸵鸟战术。它只在当前这个浏览器网页把 DOM 节点 display: none 遮住，换到手机或平板刷推依然被黄推骑脸。福滤娃直接调取 X 官方 Block 接口，全端设备立刻同步消失，彻底切断私信与骚扰通知。"
+          />
+
+          <FaqItem
+            q="批量拉黑遇到 429 提示休眠，我该怎么办？"
+            a="完全不用担心，这正是 429 智能装死熔断机制在保护你的大号！说明你在短时间内发起的推特写请求达到了官方阶段性限流阈值。此时扩展会自动停止出弹并休眠；你无需做任何额外操作，正常刷推即可，冷却倒计时结束后将自动恢复。"
+          />
+
+          <FaqItem
+            q="我的推特密码、Cookie 或私信会被上传吗？"
+            a="绝对不会！福滤娃 100% 遵守开源透明底线：检测规则在本地浏览器沙箱运行；拉黑直接借用浏览器中已有的正常会话向 X 发起请求，服务器完全接触不到你的账号密码。社区上报内容仅包含匿名的账号 handle、违规分类标签、话术特征哈希与外链域名，绝不包含推文正文或个人浏览足迹。"
+          />
+
+          <FaqItem
+            q="推特账号换了名字或马甲，还能识别出它吗？"
+            a="能！福滤娃不仅看账号名字，更核心的是比对「话术特征哈希指纹」和「引流外链根域名」。骗子和引流机器人哪怕一天换 10 个 @handle，只要话术模板或外链跳转域名命中，依然会被黄框秒级抓包锁定。"
+          />
+
+          <FaqItem
+            q="支持哪些浏览器？需要在插件里注册账号吗？"
+            a="完美支持 Chrome、Edge、Brave、Arc、Vivaldi 以及任何基于 Chromium 内核的现代浏览器。装好即用，完全不需要注册任何第三方平台账号或付费购买 API Key。"
+          />
+        </div>
+      </section>
+
+      {/* 底部引导 */}
+      <section className="mt-14 rounded-2xl border border-gold/40 bg-gradient-to-b from-gold-surface/30 to-surface p-6 sm:p-8 text-center shadow-[var(--panel-elev)]">
+        <h3 className="text-xl font-bold text-ink">一切准备就绪，开始体验清爽时间线</h3>
+        <p className="mt-2 text-xs sm:text-sm text-mist">
+          遇到任何未尽疑问或特殊反馈，欢迎前往 GitHub 社区与全球推友交流。
+        </p>
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+          <a
+            href={CHROME_STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-6 text-xs font-bold text-primary-foreground shadow-md transition-all hover:scale-[1.02] active:scale-98"
+          >
+            <span>一键添加至浏览器</span>
+            <Zap className="size-3.5" />
+          </a>
+          <Link
+            to="/lists/blacklist"
+            className="inline-flex h-10 items-center rounded-full bg-surface px-5 text-xs font-semibold text-ink shadow-sm border border-line/70 hover:bg-wash-strong transition-colors"
+          >
+            查验社区黑名单
+          </Link>
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-10 items-center rounded-full bg-surface px-5 text-xs font-semibold text-mist hover:text-ink shadow-sm border border-line/70 hover:bg-wash-strong transition-colors"
+          >
+            GitHub Issues 反馈
+          </a>
         </div>
       </section>
     </main>
@@ -293,36 +469,55 @@ export default function GuidePage() {
 function GuideRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <tr className="align-top">
-      <td className="w-1/3 py-3.5 px-4 font-semibold text-ink sm:w-1/4">{label}</td>
-      <td className="py-3.5 px-4 text-mist">{children}</td>
+      <td className="w-1/3 py-4 px-4 font-semibold text-ink sm:w-1/4 text-xs sm:text-sm">{label}</td>
+      <td className="py-4 px-4 text-mist text-xs sm:text-sm">{children}</td>
     </tr>
   );
 }
 
-function StepCard({ step, title, desc }: { step: string; title: string; desc: string }) {
+function StepCard({
+  step,
+  title,
+  badge,
+  desc,
+}: {
+  step: string;
+  title: string;
+  badge?: string;
+  desc: string;
+}) {
   return (
-    <div className="rounded-2xl border border-line/70 bg-surface p-5 shadow-[var(--panel-elev)] transition-all hover:border-ink/20">
-      <div className="flex items-center gap-2.5">
-        <span className="flex size-7 items-center justify-center rounded-lg bg-gold-surface font-mono text-xs font-bold text-gold">
-          {step}
-        </span>
-        <h3 className="font-bold text-ink text-sm">{title}</h3>
+    <div className="rounded-2xl border border-line/70 bg-surface p-5 shadow-[var(--panel-elev)] transition-all hover:border-ink/20 flex flex-col justify-between">
+      <div>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <span className="flex size-7 items-center justify-center rounded-lg bg-gold-surface font-mono text-xs font-bold text-gold">
+              {step}
+            </span>
+            <h3 className="font-bold text-ink text-sm">{title}</h3>
+          </div>
+          {badge && (
+            <span className="rounded-full bg-soft-surface border border-line/60 px-2 py-0.5 text-[10px] font-semibold text-mist">
+              {badge}
+            </span>
+          )}
+        </div>
+        <p className="mt-2.5 text-xs text-mist leading-relaxed">{desc}</p>
       </div>
-      <p className="mt-2 text-xs text-mist leading-relaxed">{desc}</p>
     </div>
   );
 }
 
-function SettingItem({ title, desc }: { title: string; desc: React.ReactNode }) {
+function SettingItem({ title, desc }: { title: string; desc: ReactNode }) {
   return (
     <div className="rounded-2xl border border-line/70 bg-surface p-5 shadow-[var(--panel-elev)]">
       <h3 className="text-sm font-bold text-ink">{title}</h3>
-      <p className="mt-1.5 text-xs text-mist leading-relaxed">{desc}</p>
+      <div className="mt-1.5 text-xs text-mist leading-relaxed">{desc}</div>
     </div>
   );
 }
 
-function FaqItem({ q, a }: { q: string; a: React.ReactNode }) {
+function FaqItem({ q, a }: { q: string; a: ReactNode }) {
   return (
     <details className="group rounded-2xl border border-line/70 bg-surface p-5 shadow-[var(--panel-elev)] transition-all">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold text-sm text-ink select-none">

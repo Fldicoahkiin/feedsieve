@@ -7,24 +7,21 @@ import { cn } from '../lib/utils';
 import { SITE_NAME, GITHUB_URL } from '../site';
 
 /**
- * 全站导航：一级入口 = 首页 + 名单公示 + 开源词库 + 打野天梯 + 教程。
- * 右侧常驻 GitHub 仓库与 Star 入口 + 主题切换。
+ * 全站单层顶栏导航：首页 + 黑名单 + 白名单 + 抢救 + 词库 + 天梯 + 教程。
+ * 杜绝双层 Tab 嵌套重合，所有名单与功能在一级顶栏平铺直达。
  */
 const NAV = [
   { label: '首页', to: '/', match: (p: string) => p === '/' },
-  {
-    label: '名单公示',
-    to: '/lists/blacklist',
-    match: (p: string) =>
-      p.startsWith('/lists') && !p.startsWith('/lists/keywords') && !p.startsWith('/lists/ranked'),
-  },
-  { label: '开源词库', to: '/lists/keywords', match: (p: string) => p.startsWith('/lists/keywords') },
-  { label: '打野天梯', to: '/lists/ranked', match: (p: string) => p.startsWith('/lists/ranked') },
+  { label: '黑名单', to: '/lists/blacklist', match: (p: string) => p === '/lists/blacklist' },
+  { label: '白名单', to: '/lists/whitelist', match: (p: string) => p === '/lists/whitelist' },
+  { label: '社区抢救', to: '/lists/rescue', match: (p: string) => p === '/lists/rescue' },
+  { label: '开源词库', to: '/lists/keywords', match: (p: string) => p === '/lists/keywords' },
+  { label: '打野天梯', to: '/lists/ranked', match: (p: string) => p === '/lists/ranked' },
   { label: '使用教程', to: '/guide', match: (p: string) => p.startsWith('/guide') },
 ] as const;
 
 const NAV_BASE_CLS =
-  'shrink-0 rounded-full px-3 py-1.5 text-sm font-semibold text-mist transition-colors hover:text-ink whitespace-nowrap';
+  'shrink-0 rounded-full px-3 py-1.5 text-xs sm:text-sm font-semibold text-mist transition-colors hover:text-ink whitespace-nowrap';
 
 const THEME_META: Record<ThemeMode, { label: string; next: string }> = {
   system: { label: '跟随系统', next: '浅色模式' },
