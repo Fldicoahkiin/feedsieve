@@ -32,3 +32,4 @@ allowBuilds:
 # （全部 test/*.test.ts 报 Request 泛型不匹配）——钉回 vitest-plugin 同代的旧 alpha。
 overrides:
   '@cloudflare/vite-plugin>miniflare': 5.20260825.0-alpha
+  sharp: 0.35.4
