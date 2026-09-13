@@ -21,6 +21,20 @@ export function hasLongNumericPayload(text: string): boolean {
     .replace(/(?<=\d)[\s\p{P}\p{S}]*(?=\d)/gu, '');
   return /(?<![\d.])\d{11,}(?![\d.])/.test(plain);
 }
+/** Corroboration only; neither signal establishes a direct seed or standalone spam label. */
+export function campaignCandidateSignal(
+  text: string,
+  normalize: (s: string) => string,
+): 'long-numeric-payload' | 'anti-bot-claim' | null {
+  if (text.length > 4096) return null;
+  if (hasLongNumericPayload(text)) return 'long-numeric-payload';
+  // Quoting or discussing a spam claim is not making that claim.
+  if (/[“”「」『』«»"‘’]/u.test(text)) return null;
+  const compact = normalize(text).replace(/[\p{P}\p{S}\s]/gu, '');
+  if (/歌词|引用|这句话|这段话|话术|广告|垃圾|举报|反诈|骗子|别信|不要信|谎称|自称/.test(compact))
+    return null;
+  return /不是(?:人机|机器人)[a-z0-9]{0,16}$/u.test(compact) ? 'anti-bot-claim' : null;
+}
 interface Family {
   at: number;
   authors: Map<string, boolean>;
@@ -53,7 +67,7 @@ export class LocalCampaignIndex {
     return before < 2 !== after < 2 ? [...family.authors.keys()] : [];
   }
   match(handle: string, text: string, trusted: (handle: string) => boolean): number {
-    if (!hasLongNumericPayload(text)) return 0;
+    if (!campaignCandidateSignal(text, this.normalize)) return 0;
     const key = campaignTemplate(text, this.normalize);
     const family = key ? this.families.get(key) : undefined;
     if (!family || this.now() - family.at > TTL_MS) return 0;

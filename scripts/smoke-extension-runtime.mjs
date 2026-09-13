@@ -17,6 +17,16 @@ const fixture = (handle, text, name = '测试用户') =>
 
 const familyFixture = [
   // Candidate intentionally comes before seeds to verify retrospective rescanning.
+  fixture('sarahcase', '她太涩了qy 我真顶不住 <a href="/belly308">@belly308</a> 2o', 'Sarah Sam'),
+  fixture('sarahnocase', '这条广告说“她太涩了qy 我真顶不住 @belly308 2o”，不要相信', '普通博主'),
+  fixture('vinokascase', '她太涩了jl 我真顶不住 <a href="/kkilyc">@kkilyc</a> 2w', 'vinokas'),
+  fixture(
+    'minnesotacase',
+    '她太涩了rc 我真顶不住 <a href="/belly308">@belly308</a> 9f',
+    'Minnesota Skinny',
+  ),
+  fixture('vpnnormalcase', 'proton从昨天开始就进不去了…还有什么加速器推荐么', '普通用户'),
+  fixture('regenacase', '那一夜你没有拒绝我😨 🙄不是人机', 'Regena Lawing'),
   fixture('cletacase', '那一夜你👆没有拒绝我😁 🧒不是人机 1789266426152', '粉色❤️ 兔女郎'),
   fixture('hollycase', '那一夜你👆没有拒绝我🤝🏻 💪不是人机 7 🌲', '娇妻媚儿（❤️想找单男看我简介🍑'),
   fixture(
@@ -34,7 +44,7 @@ const familyFixture = [
     '玩归玩闹归闹🗣️👩‍给你看福👆我不开玩笑 0 m q',
     '真实🈷️幂幂（腰软 🈷️主人看简介🍑',
   ),
-  fixture('lyriccase', '那一夜你👆没有拒绝我😁 🧒不是人机 🌲 😚', '普通博主'),
+  fixture('lyriccase', '“那一夜你没有拒绝我不是人机”', '普通博主'),
   fixture('cosplaycase', '今天排练准备参加学校的动漫社活动', '粉色❤️兔女郎'),
 ].join('');
 
@@ -113,11 +123,18 @@ async function run(degraded, remoteCached = false) {
     });
     await page.waitForSelector('#hollycase .fs-badge', { state: 'detached' });
     await page.waitForSelector('#cletacase .fs-badge', { state: 'detached' });
+    await page.waitForSelector('#regenacase .fs-badge', { state: 'detached' });
     await worker.evaluate(async () => {
       // eslint-disable-next-line no-undef
       await chrome.storage.local.set({ allowlist: [] });
     });
     await page.waitForSelector('#cletacase .fs-badge');
+    await page.waitForSelector('#regenacase .fs-badge');
+    await page.waitForSelector('#sarahcase .fs-badge');
+    await page.waitForSelector('#vinokascase .fs-badge');
+    await page.waitForSelector('#minnesotacase .fs-badge');
+    assert.equal(await page.locator('#vpnnormalcase .fs-badge').count(), 0);
+    assert.equal(await page.locator('#sarahnocase .fs-badge').count(), 0);
     // A real explicit correction must preserve the marked article in the offline outbox.
     await page.locator('#aldocase .fs-allow').click();
     await page.waitForSelector('#aldocase .fs-badge', { state: 'detached' });

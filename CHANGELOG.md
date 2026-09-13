@@ -5,6 +5,15 @@
 - 每个版本的详细工程记录见 [`docs/RELEASES.md`](docs/RELEASES.md)。
 - 二进制产物见 [GitHub Releases](https://github.com/realchendahuang/feedsieve/releases)；正式用户请从 [Chrome 应用商店](https://chromewebstore.google.com/detail/feedsieve/amhdjglnonjaoenddnifpnljgmocfdph)接收更新。
 
+## [0.9.5] — 2026-09-13
+
+### 补齐第三方账号导流与无数字模板变体
+
+- 新增短正文成对识别：完整的擦边招徕表述与第三方账号提及共同出现，容忍有限字母、数字及 emoji 噪声；只提示用户确认，不自动拉黑被提及账号。
+- 本地模板候选支持尾部“不是人机/不是机器人”作为辅助证据，仍需至少两个不同账号的直接昵称招揽证据；推断结果不能反向成为证据源，白名单撤回后重新判定。
+- 加入用户帖子下实际观察到的三个导流变体，以及同一区域正常 VPN 评论、引用、反诈、自我提及等反例。
+- 根测试 667 项、API 测试 198 项及三个真实 Chromium 运行时回放通过。本版不启用语义模型，不声称单句无上下文检测已经解决；源码发布，插件由维护者自行打包。
+
 ## [0.9.4] — 2026-09-13
 
 ### 可信反馈样本与评测数据基座

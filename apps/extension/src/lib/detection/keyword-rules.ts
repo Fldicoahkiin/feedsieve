@@ -1,3 +1,4 @@
+import { createMentionInvitationRule, MENTION_INVITATION_RULE_ID } from './mention-invitation';
 import { LOCAL_CAMPAIGN_RULE_ID } from './local-campaign';
 import { createProfileInvitationRule, PROFILE_INVITATION_RULE_ID } from './profile-invitation';
 import { loadRuntimeData } from '../platform/runtime-data';
@@ -541,6 +542,7 @@ export function createKeywordHeuristics(
   }));
   if (settings.subscribedCategoryIds.includes('adult_gray_traffic')) {
     heuristics.push(createProfileInvitationRule(normalizeKeywordPhrase));
+    heuristics.push(createMentionInvitationRule(normalizeKeywordPhrase));
   }
   return heuristics;
 }
@@ -548,7 +550,11 @@ export function categoryForKeywordRuleId(
   ruleId: string | null | undefined,
   catalog: KeywordPackCatalog = BUNDLED_KEYWORD_PACK_CATALOG,
 ): string | undefined {
-  if (ruleId === PROFILE_INVITATION_RULE_ID || ruleId === LOCAL_CAMPAIGN_RULE_ID)
+  if (
+    ruleId === PROFILE_INVITATION_RULE_ID ||
+    ruleId === LOCAL_CAMPAIGN_RULE_ID ||
+    ruleId === MENTION_INVITATION_RULE_ID
+  )
     return 'adult_gray_traffic';
   if (!ruleId?.startsWith('keyword:official:')) return undefined;
   const officialId = ruleId.slice('keyword:official:'.length);

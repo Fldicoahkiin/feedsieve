@@ -1,4 +1,8 @@
-import { LocalCampaignIndex, LOCAL_CAMPAIGN_RULE_ID } from '../detection/local-campaign';
+import {
+  LocalCampaignIndex,
+  LOCAL_CAMPAIGN_RULE_ID,
+  campaignCandidateSignal,
+} from '../detection/local-campaign';
 import { normalizeKeywordPhrase } from '../detection/keyword-rules';
 import { PROFILE_INVITATION_RULE_ID } from '../detection/profile-invitation';
 /**
@@ -143,6 +147,8 @@ export function createScan(deps: {
       uiLanguage: state.uiLanguage,
     });
     const count = campaignEnabled ? campaigns.match(handle, item.text, eligibleSeed) : 0;
+    const candidateSignal =
+      count >= 2 ? campaignCandidateSignal(item.text, normalizeKeywordPhrase) : null;
     if (eligibleSeed(handle) && result.presentation === 'ignore' && count >= 2) {
       result = runDetectionPipeline({
         input,
@@ -153,7 +159,7 @@ export function createScan(deps: {
           {
             id: LOCAL_CAMPAIGN_RULE_ID,
             check: () =>
-              `命中官方规则：与 ${count} 个具有昵称招揽证据的账号同模板 + 长数字载荷 · 正文`,
+              `命中官方规则：与 ${count} 个具有昵称招揽证据的账号同模板 + ${candidateSignal === 'anti-bot-claim' ? '正文自称非人机' : '长数字载荷'} · 正文`,
           },
         ],
         catalog: state.keywordCatalog,
@@ -163,7 +169,7 @@ export function createScan(deps: {
       result.evidence.signalIds = [
         LOCAL_CAMPAIGN_RULE_ID,
         'same-template-direct-seeds',
-        'long-numeric-payload',
+        candidateSignal!,
       ];
     }
     result.evidence.observedAt = Date.now();

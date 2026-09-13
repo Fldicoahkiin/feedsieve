@@ -7,7 +7,7 @@ const b = '那一夜你👆没有拒绝我😁 🧒不是人机 🌲 😚';
 const c = '那一夜你👆没有拒绝我😁 🧒不是人机 1789266426152';
 const eligible = () => true;
 describe('local template association', () => {
-  it('requires two distinct direct seeds AND candidate numeric evidence, independent of observation order', () => {
+  it('requires two distinct direct seeds AND candidate corroboration, independent of observation order', () => {
     expect(campaignTemplate(c, normalizeKeywordPhrase)).toBe(
       campaignTemplate(a, normalizeKeywordPhrase),
     );
@@ -18,7 +18,22 @@ describe('local template association', () => {
     expect(index.match('candidate', c, eligible)).toBe(0);
     expect(index.observe('second', b, true)).toContain('candidate');
     expect(index.match('candidate', c, eligible)).toBe(2);
-    expect(index.match('normal_lyric_quote', b, eligible)).toBe(0);
+    expect(index.match('normal_lyric_quote', '那一夜你没有拒绝我', eligible)).toBe(0);
+  });
+  it('covers the supplied Regena case without numbers only after two direct seeds, never from repetition alone', () => {
+    const text = '那一夜你没有拒绝我😨 🙄不是人机';
+    const index = new LocalCampaignIndex(normalizeKeywordPhrase);
+    index.observe('regenalawiweub', text, false);
+    expect(index.match('regenalawiweub', text, eligible)).toBe(0);
+    index.observe('first', a, true);
+    expect(index.match('regenalawiweub', text, eligible)).toBe(0);
+    expect(index.observe('second', b, true)).toContain('regenalawiweub');
+    expect(index.match('regenalawiweub', text, eligible)).toBe(2);
+    expect(index.match('regenalawiweub', text, (h) => h !== 'first')).toBe(0);
+    expect(index.match('quote', '“那一夜你没有拒绝我不是人机”', eligible)).toBe(0);
+    expect(index.match('warning', '垃圾话术：那一夜你没有拒绝我不是人机', eligible)).toBe(0);
+    index.observe('first', a, false);
+    expect(index.match('regenalawiweub', text, eligible)).toBe(0);
   });
   it('inferred accounts never amplify seed counts', () => {
     const index = new LocalCampaignIndex(normalizeKeywordPhrase);
