@@ -118,6 +118,24 @@ async function run(degraded, remoteCached = false) {
       await chrome.storage.local.set({ allowlist: [] });
     });
     await page.waitForSelector('#cletacase .fs-badge');
+    // A real explicit correction must preserve the marked article in the offline outbox.
+    await page.locator('#aldocase .fs-allow').click();
+    await page.waitForSelector('#aldocase .fs-badge', { state: 'detached' });
+    const samples = await worker.evaluate(async () => {
+      // eslint-disable-next-line no-undef
+      const data = await chrome.storage.local.get(null);
+      return Object.entries(data)
+        .filter(([k]) => k.startsWith('trainingSamplePending:'))
+        .map(([, v]) => v);
+    });
+    assert.equal(samples.length, 1);
+    assert.equal(samples[0].action, 'false-positive');
+    assert.equal(samples[0].handle, 'aldocase');
+    assert.equal(samples[0].displayName, '线下🈷️舞蹈学院球球想🈷️看简介🍑');
+    assert.equal(samples[0].text, 't我果👆然太涩了💞😎 有人想锐评一下我的福嘛 - 3');
+    assert.equal(samples[0].detection.ruleId, 'keyword:profile:adult-invitation');
+    assert.equal(samples[0].clientVersion, manifest.version);
+    assert(samples[0].catalogVersion);
 
     const stored = await worker.evaluate(async () => {
       // eslint-disable-next-line no-undef

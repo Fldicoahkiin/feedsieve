@@ -166,6 +166,8 @@ export function createScan(deps: {
         'long-numeric-payload',
       ];
     }
+    result.evidence.observedAt = Date.now();
+    result.evidence.catalogVersion = state.keywordCatalog.pack_version;
     // A withdrawn seed or changed profile must retract the previous inferred badge.
     if (
       result.presentation === 'ignore' &&
