@@ -12,8 +12,31 @@ assert(
     e.resources.some((p) => p.includes('community') || p === '*' || p === '**'),
   ),
 );
-const fixture = (handle, text) =>
-  `<div data-testid="cellInnerDiv" id="${handle}"><article data-testid="tweet"><div data-testid="User-Name"><a href="/${handle}"><span>测试用户</span></a><a href="/${handle}"><span>@${handle}</span></a></div><a href="/${handle}/status/1720000000000000000"><time>now</time></a><div data-testid="tweetText">${text}</div><div role="group"><button data-testid="like">Like</button></div></article></div>`;
+const fixture = (handle, text, name = '测试用户') =>
+  `<div data-testid="cellInnerDiv" id="${handle}"><article data-testid="tweet"><div data-testid="User-Name"><a href="/${handle}"><span>${name}</span></a><a href="/${handle}"><span>@${handle}</span></a></div><a href="/${handle}/status/1720000000000000000"><time>now</time></a><div data-testid="tweetText">${text}</div><div role="group"><button data-testid="like">Like</button></div></article></div>`;
+
+const familyFixture = [
+  // Candidate intentionally comes before seeds to verify retrospective rescanning.
+  fixture('cletacase', '那一夜你👆没有拒绝我😁 🧒不是人机 1789266426152', '粉色❤️ 兔女郎'),
+  fixture('hollycase', '那一夜你👆没有拒绝我🤝🏻 💪不是人机 7 🌲', '娇妻媚儿（❤️想找单男看我简介🍑'),
+  fixture(
+    'lisandracase',
+    '那一夜你👆没有拒绝我😁 🧒不是人机 🌲 😚',
+    '冰冰🈷️（大三学生🍓真实约见👌',
+  ),
+  fixture(
+    'aldocase',
+    't我果👆然太涩了💞😎 有人想锐评一下我的福嘛 - 3',
+    '线下🈷️舞蹈学院球球想🈷️看简介🍑',
+  ),
+  fixture(
+    'leahcase',
+    '玩归玩闹归闹🗣️👩‍给你看福👆我不开玩笑 0 m q',
+    '真实🈷️幂幂（腰软 🈷️主人看简介🍑',
+  ),
+  fixture('lyriccase', '那一夜你👆没有拒绝我😁 🧒不是人机 🌲 😚', '普通博主'),
+  fixture('cosplaycase', '今天排练准备参加学校的动漫社活动', '粉色❤️兔女郎'),
+].join('');
 
 async function run(degraded, remoteCached = false) {
   const temp = mkdtempSync(join(tmpdir(), 'feedsieve-mv3-'));
@@ -52,7 +75,7 @@ async function run(degraded, remoteCached = false) {
     await context.route('https://x.com/**', (route) =>
       route.fulfill({
         contentType: 'text/html; charset=utf-8',
-        body: `<!doctype html><html><body><main>${fixture('literalcase', '全国空降')}${fixture('variantcase', '全國空降')}${fixture('screenshotcase', '应该没人比我👆玩的开了吧🍇🛶我福不黑不信你看 1789266318520')}${fixture('normalcase', '今天去公园散步，天气很好。')}</main></body></html>`,
+        body: `<!doctype html><html><body><main>${fixture('literalcase', '全国空降')}${fixture('variantcase', '全國空降')}${fixture('screenshotcase', '应该没人比我👆玩的开了吧🍇🛶我福不黑不信你看 1789266318520')}${fixture('normalcase', '今天去公园散步，天气很好。')}${familyFixture}</main></body></html>`,
       }),
     );
     const page = await context.newPage();
@@ -77,6 +100,25 @@ async function run(degraded, remoteCached = false) {
     await page.waitForSelector('#variantcase .fs-badge', { timeout: 30_000 });
     await page.waitForSelector('#screenshotcase .fs-badge');
     assert.equal(await page.locator('#normalcase .fs-badge').count(), 0);
+    for (const handle of ['hollycase', 'lisandracase', 'aldocase', 'leahcase', 'cletacase']) {
+      await page.waitForSelector(`#${handle} .fs-badge`);
+    }
+    for (const handle of ['lyriccase', 'cosplaycase']) {
+      assert.equal(await page.locator(`#${handle} .fs-badge`).count(), 0);
+    }
+    // Withdrawing one source must remove the inferred candidate, not just prevent future hits.
+    await worker.evaluate(async () => {
+      // eslint-disable-next-line no-undef
+      await chrome.storage.local.set({ allowlist: [{ handle: 'hollycase', addedAt: Date.now() }] });
+    });
+    await page.waitForSelector('#hollycase .fs-badge', { state: 'detached' });
+    await page.waitForSelector('#cletacase .fs-badge', { state: 'detached' });
+    await worker.evaluate(async () => {
+      // eslint-disable-next-line no-undef
+      await chrome.storage.local.set({ allowlist: [] });
+    });
+    await page.waitForSelector('#cletacase .fs-badge');
+
     const stored = await worker.evaluate(async () => {
       // eslint-disable-next-line no-undef
       const values = await chrome.storage.local.get(null);

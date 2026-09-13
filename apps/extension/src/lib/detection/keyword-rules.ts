@@ -1,3 +1,5 @@
+import { LOCAL_CAMPAIGN_RULE_ID } from './local-campaign';
+import { createProfileInvitationRule, PROFILE_INVITATION_RULE_ID } from './profile-invitation';
 import { loadRuntimeData } from '../platform/runtime-data';
 import fs from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -520,7 +522,7 @@ export function createKeywordHeuristics(
 ): readonly HeuristicRule[] {
   const rules = activeKeywordRules(settings, catalog);
   const matchAll = createKeywordMatchIndex(rules);
-  return rules.map((rule, ruleIndex) => ({
+  const heuristics: HeuristicRule[] = rules.map((rule, ruleIndex) => ({
     id: `keyword:${rule.id}`,
     check(input) {
       // 垃圾账号常把引流词直接放在昵称里，而正文只发图片或表情。
@@ -537,11 +539,17 @@ export function createKeywordHeuristics(
       return fieldLabel ? `${base} · ${fieldLabel}` : base;
     },
   }));
+  if (settings.subscribedCategoryIds.includes('adult_gray_traffic')) {
+    heuristics.push(createProfileInvitationRule(normalizeKeywordPhrase));
+  }
+  return heuristics;
 }
 export function categoryForKeywordRuleId(
   ruleId: string | null | undefined,
   catalog: KeywordPackCatalog = BUNDLED_KEYWORD_PACK_CATALOG,
 ): string | undefined {
+  if (ruleId === PROFILE_INVITATION_RULE_ID || ruleId === LOCAL_CAMPAIGN_RULE_ID)
+    return 'adult_gray_traffic';
   if (!ruleId?.startsWith('keyword:official:')) return undefined;
   const officialId = ruleId.slice('keyword:official:'.length);
   return flattenOfficialRules(catalog).find((rule) => rule.id === officialId)?.category;

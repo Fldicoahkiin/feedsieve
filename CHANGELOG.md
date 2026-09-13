@@ -5,6 +5,15 @@
 - 每个版本的详细工程记录见 [`docs/RELEASES.md`](docs/RELEASES.md)。
 - 二进制产物见 [GitHub Releases](https://github.com/realchendahuang/feedsieve/releases)；正式用户请从 [Chrome 应用商店](https://chromewebstore.google.com/detail/feedsieve/amhdjglnonjaoenddnifpnljgmocfdph)接收更新。
 
+## [0.9.3] — 2026-09-13
+
+### 昵称招揽与本地模板关联
+
+- 增加昵称中的成对招揽证据：招揽单男/单女与资料导流、🈷暗号与真实约见等；不凭年龄、学生身份、单个 emoji 或普通歌词判定。
+- 本地短时模板关联要求至少两个不同账号的直接昵称证据，并要求候选正文有长数字载荷；去除数字、emoji 和分隔符噪声后进行模板比较。
+- 关联命中不能反向充当证据来源；白名单会撤销相关证据和推断标注，关闭成人过滤时同时关闭该关联层。仅提示用户确认，不自动拉黑或自动产生社区票。
+- 加入五个用户提供的真实漏检样本、反例、反向撤销及真实 Chromium 页面回放。
+
 ## [0.9.2] — 2026-09-13
 
 ### 修复升级后官方规则全部未启用
