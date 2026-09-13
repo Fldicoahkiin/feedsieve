@@ -21,7 +21,10 @@ import type { ContentState, PageMarkedAccount } from './page-state';
  * builtin-list / fingerprint / domain / weak-signal-combo（乱码批量号锚点 +
  * 内容佐证，直接证据）是独立发现，用户确认拉黑后正常计票。
  */
-export function communityVoteForDetection(detectionSource: string | undefined, ruleId?: string): boolean {
+export function communityVoteForDetection(
+  detectionSource: string | undefined,
+  ruleId?: string,
+): boolean {
   return detectionSource !== 'community-list' && !ruleId?.startsWith('keyword:');
 }
 
@@ -112,7 +115,8 @@ export function createBlockOne(state: ContentState) {
     // 判定材料（推文原文/昵称/简介）按用户 2026-09-12 拍板随票上报 + 本机留档
     const markedEvidence = state.pageMarked.get(handle);
     const tweetFacts =
-      (options.tweetSnippet ?? markedEvidence?.snippet)?.trim() || undefined;
+      (options.tweetSnippet ?? item.evidence.tweetText ?? markedEvidence?.snippet)?.trim() ||
+      undefined;
     await markBlocked(
       handle,
       xUserId,
@@ -128,10 +132,16 @@ export function createBlockOne(state: ContentState) {
       },
       {
         ...(tweetFacts ? { tweetSnippet: tweetFacts } : {}),
-        ...(options.displayName ??
-        markedEvidence?.displayName ? { displayName: options.displayName ?? markedEvidence?.displayName } : {}),
+        ...((options.displayName ?? item.evidence.displayName ?? markedEvidence?.displayName)
+          ? {
+              displayName:
+                options.displayName ?? item.evidence.displayName ?? markedEvidence?.displayName,
+            }
+          : {}),
         // bio 是 XHR 桥带来的判定材料；队列延迟执行时页面可能已重载，缓存 miss 缺省
-        ...(options.bio ?? state.bioCache.get(handle) ? { bio: options.bio ?? state.bioCache.get(handle)! } : {}),
+        ...((options.bio ?? item.evidence.bio ?? state.bioCache.get(handle))
+          ? { bio: options.bio ?? item.evidence.bio ?? state.bioCache.get(handle)! }
+          : {}),
       },
     );
     await bumpStat('blocked');

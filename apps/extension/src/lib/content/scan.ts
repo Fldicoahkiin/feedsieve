@@ -77,6 +77,7 @@ export function createScan(deps: {
 
     const input = {
       handle: item.author.handle,
+      postId: item.postId,
       displayName: item.author.displayName,
       text: item.text,
       bio,

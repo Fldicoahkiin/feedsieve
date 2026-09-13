@@ -11,16 +11,14 @@ import { SEARCH_F_LIVE_HTML } from '../../../../../fixtures/x/timeline/search-f-
 import { PROFILE_TIMELINE_HTML } from '../../../../../fixtures/x/profile/profile';
 import { THREAD_HTML } from '../../../../../fixtures/x/replies/thread';
 import { runDetectionPipeline } from './detection-pipeline';
-import {
-  BUNDLED_KEYWORD_PACK_CATALOG,
-  type KeywordPackCatalog,
-} from './keyword-packs';
+import { BUNDLED_KEYWORD_PACK_CATALOG, type KeywordPackCatalog } from './keyword-packs';
 import { createKeywordHeuristics, DEFAULT_KEYWORD_RULE_SETTINGS } from './keyword-rules';
 
 const keywordHeuristics = createKeywordHeuristics(DEFAULT_KEYWORD_RULE_SETTINGS);
 
 function runPipeline(input: {
   handle: string;
+  postId?: string;
   displayName?: string;
   text?: string;
   bio?: string;
@@ -154,7 +152,14 @@ describe('fixtures/x 生产管线联动（runDetectionPipeline）', () => {
 
   it('拼音代字家族：纯汉字原话与带调/leet 变体全部命中；正常外语文本不误伤', () => {
     // 原话（词库新入库）与其展开变体（构建期生成，见 build-keyword-packs pinyinVariants）
-    for (const text of ['没人比她骚', '没人比她sao', '没人比她sǎo', '没人比她sa0', 'sǎo货', 'sa0货']) {
+    for (const text of [
+      '没人比她骚',
+      '没人比她sao',
+      '没人比她sǎo',
+      '没人比她sa0',
+      'sǎo货',
+      'sa0货',
+    ]) {
       const result = runPipeline({ handle: 'evade01', text });
       expect(result.presentation, text).toBe('review');
       // 原话命中词库本体规则（无 -py 后缀），变体命中 -pyN 派生规则
@@ -190,7 +195,12 @@ describe('fixtures/x 生产管线联动（runDetectionPipeline）', () => {
       version: 'test',
     };
     const exempt = runDetectionPipeline({
-      input: { handle: 'pinnedauthor', bio: '我福不黑不信你看' },
+      input: {
+        handle: 'pinnedauthor',
+        postId: '1999999999999999999',
+        text: '用户仍可手动覆盖',
+        bio: '我福不黑不信你看',
+      },
       community,
       builtinList: new Set(),
       keywordHeuristics,
@@ -200,6 +210,11 @@ describe('fixtures/x 生产管线联动（runDetectionPipeline）', () => {
     });
     expect(exempt.detection).toBeNull();
     expect(exempt.presentation).toBe('ignore');
+    expect(exempt.evidence).toMatchObject({
+      evidencePostId: '1999999999999999999',
+      tweetText: '用户仍可手动覆盖',
+      bio: '我福不黑不信你看',
+    });
     expect(result.detection).not.toBeNull();
   });
 });
