@@ -23,17 +23,10 @@ import type { ManualActions } from './manual-actions';
  * 最近一次公开最终名单随扩展打包，作为离线兜底。
  * 社区名单走运行时同步（background SW -> storage.local -> 这里建索引），
  * 服务器快照永远是权威来源。
- * 名单 JSON（2 MB+ 级）不进 JS chunk，作为打包资源运行时 fetch（替换原来
+ * 名单 JSON（2 MB+ 级）不进 JS chunk，由后台读取随包资源（替换原来
  * 的静态 import——它会同步锁住 content script 的 JS 解析三个入口各一份）。
  */
 let builtinList: ReadonlySet<string> = toHandleSet([]);
-void getBundledEntries()
-  .then((entries) => {
-    builtinList = toHandleSet(entries as never[]);
-  })
-  .catch(() => {
-    // 打包资源缺失属异常；保持空集，社区名单同步通道仍可用
-  });
 
 export function createScan(deps: {
   state: ContentState;
@@ -45,6 +38,16 @@ export function createScan(deps: {
   const { state, controller, fold, badges, manual } = deps;
   const { markCell } = badges;
   const { attachManualAction } = manual;
+  void getBundledEntries()
+    .then((entries) => {
+      builtinList = toHandleSet(entries as never[]);
+      controller.reset();
+      controller.fullRescan();
+    })
+    .catch((error) => {
+      // 打包资源缺失属异常；保持空集，社区名单同步通道仍可用。但绝不静默：
+      console.error('[FeedSieve] 随包名单快照加载失败，内置名单为空，仅剩服务端同步通道:', error);
+    });
 
   /**
    * 单个 article 的提取 + 检测 + 标注。

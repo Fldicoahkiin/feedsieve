@@ -46,5 +46,11 @@ jobs:
       - name: Build extension (wxt)
         run: pnpm build:extension
 
+      - name: Install Chromium for MV3 acceptance
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: MV3 offline startup and recovery
+        run: node scripts/smoke-extension-runtime.mjs
+
       - name: Dependency audit
         run: pnpm audit --audit-level high

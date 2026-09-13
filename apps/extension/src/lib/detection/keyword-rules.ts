@@ -1,3 +1,4 @@
+import { loadRuntimeData } from '../platform/runtime-data';
 import fs from 'node:fs';
 import { join, resolve } from 'node:path';
 import type { HeuristicRule } from '@feedsieve/detector';
@@ -64,7 +65,7 @@ function flattenOfficialRules(catalog: KeywordPackCatalog): OfficialKeywordRule[
  * 否则“ＡＢＣ”和“abc”会在备份恢复时重复出现。
  */
 /** 规避变体映射数据（scripts/build-variant-tables.mjs 生成，随包构建；只收权威来源，禁止手补）。 */
-// 与名单快照/词库同策略：不进 JS bundle，扩展运行时 runtime.getURL + fetch 读取；
+// 与名单快照/词库同策略：不进 JS bundle，通过后台和 storage 读取；
 // Node 工具链态（vitest / lint）退回从源文件同步读，保持测试同步可用。
 const VARIANT_TABLES_URL = '/community/keyword-packs/variant-tables.json';
 
@@ -93,17 +94,20 @@ export function ensureVariantTables(): Promise<void> {
       typeof (globalThis as { browser?: { runtime?: { getURL?: unknown } } }).browser?.runtime
         ?.getURL === 'function'
         ? (async () => {
-            const res = await fetch(browser.runtime.getURL(VARIANT_TABLES_URL));
-            const raw = (res.ok ? await res.json() : null) as VariantTableShape | null;
+            const raw = (await loadRuntimeData(VARIANT_TABLES_URL)) as VariantTableShape | null;
             if (!raw?.trad_simp || !raw?.radicals || !raw?.confusables) {
               throw new Error('invalid variant tables');
             }
             VARIANT_TABLES = raw;
             buildVariantIndex();
+            NORMALIZE_CACHE.clear();
           })()
         : Promise.resolve(); // Node 工具链态已在模块加载时同步装入
   }
-  return variantLoad;
+  return variantLoad.catch((error) => {
+    variantLoad = null;
+    throw error;
+  });
 }
 // 三张表的链路统一收敛：confusable → 部首正字 → 简体；重复进入循环直到不动点（≤3 轮足够）。
 const VARIANT_BY_CODEPOINT = new Map<number, string>();
@@ -317,7 +321,10 @@ function createKeywordMatchIndex(rules: readonly ActiveKeywordRule[]) {
         }
       }
       for (const ruleIndex of asciiRuleIndexes) {
-        if (!hits.has(ruleIndex) && ruleMatchersForRule(rules[ruleIndex]!).ascii!.test(normalized)) {
+        if (
+          !hits.has(ruleIndex) &&
+          ruleMatchersForRule(rules[ruleIndex]!).ascii!.test(normalized)
+        ) {
           hits.set(ruleIndex, fieldIndex);
         }
       }

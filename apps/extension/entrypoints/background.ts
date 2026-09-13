@@ -1,3 +1,4 @@
+import { registerRuntimeDataWorker } from '../src/lib/platform/runtime-data';
 import { syncCommunitySnapshot } from '@feedsieve/community-lists';
 import {
   COMMUNITY_API_BASE,
@@ -11,6 +12,7 @@ import { syncKeywordPackCatalog } from '../src/lib/detection/keyword-packs';
 import { getChromeSidePanel } from '../src/lib/platform/sidepanel';
 
 export default defineBackground(() => {
+  registerRuntimeDataWorker();
   // MV3 service worker 随时可能被回收：这里只做事件入口。
   // 名单/词库同步不做定时 alarm：数据只在 X 页面打开时才被消费，
   // content script 启动、每 15 分钟、回到前台与 popup 打开都会触发同步，
@@ -54,8 +56,9 @@ export default defineBackground(() => {
     } catch {
       // 网络不可达：回退本地快照
     }
-    const state: OfficialPauseState =
-      (await getCommunityKillSwitch()) ?? { destructive_actions_disabled: false };
+    const state: OfficialPauseState = (await getCommunityKillSwitch()) ?? {
+      destructive_actions_disabled: false,
+    };
     officialPauseCheck = { at: now, state };
     return state;
   }

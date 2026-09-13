@@ -5,6 +5,15 @@
 - 每个版本的详细工程记录见 [`docs/RELEASES.md`](docs/RELEASES.md)。
 - 二进制产物见 [GitHub Releases](https://github.com/realchendahuang/feedsieve/releases)；正式用户请从 [Chrome 应用商店](https://chromewebstore.google.com/detail/feedsieve/amhdjglnonjaoenddnifpnljgmocfdph)接收更新。
 
+## [0.9.1] — 2026-09-13
+
+### 修复检测数据加载
+
+- 随包词库、变体表和名单由后台读取并写入独立版本缓存，内容脚本只读 storage 或向后台请求；不再依赖网页源 fetch 或 WAR。
+- 随包缓存与已验签远端快照分离，升级不会复用旧版随包数据，也不会推迟首次远端同步。
+- 变体表和官方词库独立加载；失败可重试，恢复后清除旧归一化缓存并重新检测；名单加载完成也会重扫当前页面。
+- 增加浏览器运行时分支回归测试和发版资源审计，异常保留错误日志。
+
 ## [0.9.0] — 2026-09-13
 
 ### 检测质量
