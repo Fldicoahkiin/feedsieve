@@ -1,189 +1,205 @@
 <p align="center">
-  <img src="assets/brand/avatar.png" width="96" alt="福滤娃 FeedSieve" />
+  <img src="assets/brand/avatar-hires.png" width="100" alt="福滤娃 FeedSieve" />
 </p>
 
 <h1 align="center">福滤娃 FeedSieve</h1>
 
 <p align="center">
-  <strong>不信你看。看不见就对了。</strong><br>
-  X（Twitter）赛博清洁工：高置信垃圾账号黄框标注，一键原生拉黑，全端同步消失。
+  <strong>用了福滤娃，评论区不骚了，也不黑了。</strong><br>
+  开源的 X（Twitter）降妖除魔扩展：黄推一眼现形，一键全端超度，误杀随时捞回。
 </p>
 
 <p align="center">
   <a href="https://chromewebstore.google.com/detail/feedsieve/amhdjglnonjaoenddnifpnljgmocfdph"><img src="https://img.shields.io/chrome-web-store/v/amhdjglnonjaoenddnifpnljgmocfdph?logo=googlechrome&logoColor=white&label=Chrome%20Web%20Store" alt="Chrome Web Store 版本" /></a>
   <a href="https://chromewebstore.google.com/detail/feedsieve/amhdjglnonjaoenddnifpnljgmocfdph"><img src="https://img.shields.io/chrome-web-store/users/amhdjglnonjaoenddnifpnljgmocfdph?label=users" alt="商店用户数" /></a>
+  <a href="https://github.com/realchendahuang/feedsieve/stargazers"><img src="https://img.shields.io/github/stars/realchendahuang/feedsieve?logo=github&color=gold" alt="GitHub Stars" /></a>
   <a href="https://github.com/realchendahuang/feedsieve/releases"><img src="https://img.shields.io/github/v/release/realchendahuang/feedsieve?logo=github" alt="最新 Release" /></a>
-  <a href="https://github.com/realchendahuang/feedsieve/stargazers"><img src="https://img.shields.io/github/stars/realchendahuang/feedsieve?logo=github" alt="GitHub Stars" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/realchendahuang/feedsieve" alt="MIT License" /></a>
   <a href="https://github.com/realchendahuang/feedsieve/commits/main"><img src="https://img.shields.io/github/commit-activity/m/realchendahuang/feedsieve?label=commits" alt="提交活跃度" /></a>
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs welcome" /></a>
 </p>
 
 <p align="center">
-  <a href="https://chromewebstore.google.com/detail/feedsieve/amhdjglnonjaoenddnifpnljgmocfdph"><strong>⬇️ Chrome 应用商店安装</strong></a>
+  <a href="https://chromewebstore.google.com/detail/feedsieve/amhdjglnonjaoenddnifpnljgmocfdph"><strong>⬇️ Chrome 商店一键安装</strong></a>
   ·
-  <a href="#安装">本地构建</a>
+  <a href="https://feedsieve.win"><strong>🌐 官网与公示</strong></a>
   ·
-  <a href="#使用教程">使用教程</a>
+  <a href="https://feedsieve.win/guide">使用教程</a>
+  ·
+  <a href="https://feedsieve.win/lists/blacklist">3,144条黑名单</a>
+  ·
+  <a href="https://feedsieve.win/lists/keywords">778条开源词库</a>
+  ·
+  <a href="https://feedsieve.win/lists/ranked">打野天梯榜</a>
   ·
   <a href="CHANGELOG.md">更新日志</a>
-  ·
-  <a href="CONTRIBUTING.md">参与贡献</a>
-  ·
-  <a href="PRIVACY.md">隐私政策</a>
-  ·
-  <a href="https://feedsieve.win">官网</a>
 </p>
 
 <p align="center">
-  <img src="assets/store/screenshot-1-marked.png" width="820" alt="FeedSieve 在时间线上用黄框标注垃圾账号" />
+  <img src="assets/demo.gif" width="760" alt="福滤娃实际运行演示" />
 </p>
 
-> [!TIP]
-> **为什么是拉黑，而不是隐藏？** 本地隐藏只骗过你自己这一个浏览器；X 原生 Block 全端生效——手机同步消失，被拉黑的号再也无法回复你、@ 你、关注你。误伤也不怕，一键 Unblock 放回来。
+---
 
-## 这是什么
+## 中文 X 现状：白天当打工人，晚上当扫街城管
 
-**FeedSieve / 福滤娃** 是一个开源的 X（Twitter）垃圾账号清理工具：高置信社区名单会在你已登录的 `x.com` 页面上用黄框提示；扩展没认出的账号，你可以随手点「标记垃圾并拉黑」。所有拉黑都由你明确触发，并真实写入 X 黑名单。
+在中文推特刷稍微有点热度的推文，评论区几乎逃不过这几尊大佛：
+1. **黄推复读机**：开局一句“那一夜你没有拒绝我不是人机 1827361928”，简介挂着“娇妻媚儿想找单男看我置顶🍑”；
+2. **币圈引流怪**：“跟着老师布局已翻十倍，进裙免费领财富密码”；
+3. **黑产僵尸号**：复制别人的正经高赞推文，洗稿抢前排赚流量补贴。
 
-色情引流、机器人刷屏、广告轰炸、互动钓鱼，信号各不相同，处置只有一种：**写入 X 黑名单——手机端同步消失，被拉黑的号再也无法回复你、@ 你、关注你。**
+马斯克天天吹 Grok 解决推特水军，结果中文评论区的水军比真人还多。大家试过的自救工具往往走入两个极端：
+- **纯本地隐藏（`display: none`）——鸵鸟战术**：
+  电脑网页上眼睛闭起来当全世界穿了衣服。一掏出手机 App 刷推，黄推照样骑脸；最离谱的是对方依然能 @ 你、私信你、在你的推文下欢快开 party。
+- **传统拉黑脚本——赛博秦城 + 伤敌八百自损一千**：
+  规则是黑盒，作者看谁不顺眼就拉黑谁；哪天误杀了正常博主，谁都不知道，博主在小黑屋里喊冤都没人听得见；更绝的是许多脚本用 `forEach` 无脑狂轰接口，黄推还没超度几个，推特反手把你账号给封了——“我治不了满屏水军，我还治不了你手速太快？”
 
-| 方案 | 生效范围 | 阻断互动 |
-| --- | --- | --- |
-| 本地隐藏（多数同类工具） | 只有装了扩展的这个浏览器 | ❌ |
-| **X 原生 Block（FeedSieve）** | 全端，手机同步消失 | ✅ 无法再回复 / @ / 关注 |
+**福滤娃（FeedSieve）专治这种不服：**
+- **不骚了**：精准识别并调用推特原生 Block 物理超度，全端同步清空，掐断一切骚扰；
+- **也不黑了**：全量规则公开明牌，拒绝黑盒暗箱，误杀秒级抢救，内置 400 发子弹安全配额防封号。
 
-> **可见优先，拉黑唯一。Local detect. Community list. AI last. Native Block through the page.**
+| 方案大比拼 | 本地折叠隐藏 | 传统黑盒拉黑脚本 | **福滤娃 FeedSieve** |
+|---|---|---|---|
+| **生效范围** | 仅当前电脑网页有效 | 全端同步 | **全端同步（手机、平板、客户端彻底清静）** |
+| **物理防骚扰** | ❌ 对方依然能 @ 你、私信你 | ✅ 阻断互动 | **✅ 物理级阻断，对方连视奸你的机会都没了** |
+| **视觉交互** | 暴力删节点，你啥也不知道 | 静默自动暗杀，全程黑盒 | **只打醒目黄框，明牌贴出判定理由，内容原样展示** |
+| **杀生大权** | 无（单纯眼不见为净） | 插件擅自做主 | **行刑权交给你：手动顺手拉黑，手滑一键放回** |
+| **误伤救助** | 误判无法感知 | 申诉无门（直接判无期徒刑） | **误伤一键 Unblock 原路放回，社区抢救秒级全网赦免** |
+| **规则透明度** | 几条写死的本地正则 | 闭源私服，拉黑全凭作者喜好 | **全量开源公示：3,144 个黑名单与 778 条词库明牌贴在官网上** |
+| **账号安全** | 不调接口无风险 | 粗暴并发，推特立刻送你 429 封号礼包 | **400发/天滚动限额 + 拟人化抖动 + 429 自动装死熔断** |
+| **心理体验** | 越看越恶心，赛博精神内耗 | 机械枯燥的扫垃圾杂役 | **反客为主进野区刷怪：拿首杀、打排位、攒积分当大娃** |
 
-黄框标注永不隐藏内容；社区公开名单提供识别弹药；AI 只处理模糊案例；所有拉黑通过你已登录 X 会话的内部 Block 接口执行，无需 X Developer API / OAuth 应用。
+---
 
-## 安装
+## 它是怎么治这帮机器人的？
 
-| 方式 | 步骤 |
-| --- | --- |
-| **Chrome 应用商店（推荐）** | 前往[商店页面](https://chromewebstore.google.com/detail/feedsieve/amhdjglnonjaoenddnifpnljgmocfdph)点「添加至 Chrome」，自动接收更新 |
-| **GitHub Releases** | 从 [Releases](https://github.com/realchendahuang/feedsieve/releases) 下载 `feedsieve-*-chrome.zip` 并解压 → 打开 `chrome://extensions` 开启「开发者模式」→「加载已解压的扩展程序」 |
-| **从源码构建** | `git clone https://github.com/realchendahuang/feedsieve.git && pnpm install && pnpm build:extension`，然后加载 `apps/extension/.output/chrome-mv3`（需要 Node ≥ 22 与 pnpm） |
+### 1. 黄框标出，把行刑权交给你（绝不擅自折叠内容）
+刷推时插件**绝对不擅自隐藏任何推文内容**。
+- 命中了黑名单或特征词库的账号，只会在时间线上打上**非常显眼的亮黄框**，并在底下贴出抓包依据（例如 `[命中黑名单: 3人标记]`、`[全角变形特征: 那一夜你没有拒绝我]`）；
+- 完整内容原样留给你看，要不要送走它，完全由你说了算；
+- 手滑点错了？在历史记录里点一下「放回来」，原生 Unblock 秒级撤销，不留任何心理负担。
 
-**Edge / Brave 等 Chromium 浏览器可直接装商店版**：Edge 打开商店页面时会提示「允许来自其他商店的扩展」，允许后点「添加至 Chrome」即可，无需单独上架 Edge Add-ons（也不用后两种方式）。
+### 2. 原生 Block，全端同步超度
+本地 `display: none` 骗得了谁？福滤娃直接借用你在浏览器中已登录的 X 会话，调用推特原生 Block 接口：
+- 手机 App、平板、网页端全平台同步直接清空；
+- 彻底斩断关系链：被拉黑的账号再也无法回复你、@ 你、转发你或向你发私信，物理级失联。
 
-## 使用教程
+### 3. 拒绝黑盒审判，规则全量明牌公示
+谁也没有资格当中文互联网的暗黑仲裁官。福滤娃坚持所有依据在阳光下晒出来：
+- 📜 **[社区黑名单全量公开](https://feedsieve.win/lists/blacklist)**：3,144 个社区标记的垃圾号明牌检索，公开展示票数、推文原证与关联引流域名；
+- 📖 **[开源词库全量公开](https://feedsieve.win/lists/keywords)**：8 大行业包共 778 条正则与词库全部开源，任何人都能在网页端直接挑刺、提 PR 或补词；
+- 🛡️ **[误伤申诉与白名单](https://feedsieve.win/lists/whitelist)**：正常博主被误标？社区抢救票压倒举报后秒级全网解封，也随时可在 [申诉入口](https://feedsieve.win/lists/apply) 递交复核；
+- 🔐 **Ed25519 纯数学验签**：名单分发带数字签名，本地防篡改与防版本回滚，中间人想加私货门都没有。
 
-分步教程（含打野排位、设置项逐条、常见问题）见 [docs/USAGE.md](docs/USAGE.md)，或读[网页版教程](https://feedsieve.win/guide)。核心就四步：
+### 4. 每天 400 发子弹配额，防推特反向风控
+推特官方天天治不了满屏黄推，但对正常用户拉黑频次抓得比谁都严。福滤娃给你的账号穿上了防弹衣：
+- 24 小时 400 条滚动拉黑额度，拉黑操作加入了拟人化随机延迟（300ms ~ 1200ms）；
+- 后台状态机一旦撞见推特吐 429（Rate Limit Exceeded），立即自动装死熔断并休眠，绝不硬打，保住你的推特大号不被风控。
 
-1. **刷 X，看黄框** — 高置信垃圾账号被黄框标出，带判定理由，内容不隐藏。
-2. **单个送走** — 黄框上点「顺手拉黑」，走你已登录 X 会话的内部 Block 接口，手机端同步消失。
-3. **攒一批** — 黄标账号自动进待拉黑列表，点「一键拉黑 N 个」逐个执行；成功移除，失败如实保留原因。
-4. **漏网的自己补** — 任意推文操作栏点「标记垃圾并拉黑」，你的动作就是最高质量的判断；误伤点「放回来」一键撤销。
+### 5. 评论区打野排位（Hunting）：把吃苍蝇变成刷野怪
+既然天天免不了在评论区撞见这帮孙子，不如反客为主把它们当野怪刷了：
+- 揪出新变种样本拿下**首杀（First Blood）**，送走公认垃圾号计入**击杀**；
+- 头衔一路晋级：`滤福娃` → `鞭福娃` → `滤福侠` → `鞭福侠` → `滤福王` → `鞭福王中王`；
+- 每周天梯榜公布在 [feedsieve.win/lists/ranked](https://feedsieve.win/lists/ranked)，前 7 名尊享葫芦娃角色徽标（大娃到七娃），8-50 名合体为小金刚；
+- **防刷分倒扣机制**：想恶意标记正常人刷榜？一旦被社区翻案，立刻双倍扣分（-2 分），数学期望恒为负，老老实实打野才是正道。
 
-进阶两件事：弹窗「打野」tab 看本周战报与榜单速览（完整周榜在[官网](https://feedsieve.win/leaderboard)，想露脸需认领档案并邮箱验证）；首次使用建议在设置里**同步关注列表**（存为本地保护名单）并按需开启词库包。
+### 6. 原文不出设备，偷看隐私算我输
+- 词库归一化与 SimHash 模糊指纹计算全部在浏览器沙箱本地执行；
+- 推文正文、个人私信、关注列表和浏览记录**绝对不会上传**；
+- 社区上报仅限 Handle、单向哈希特征与外链域名，双语隐私政策详见 [`PRIVACY.md`](PRIVACY.md)。
 
-## 工作原理
+---
+
+## 四步上手，装好即爽
+
+1. **刷推看黄框**：打开 `x.com` 正常冲浪，垃圾账号自动被打上黄框并附带罪证，推文原样展示；
+2. **顺手送走它**：看到黄框嫌碍眼，点右上角「顺手拉黑」，走当前会话直调原生接口，手机端同步消失；
+3. **批量大扫除**：攒了一堆不想挨个点？打开扩展弹窗，点「一键拉黑全部」，后台状态机按安全节奏稳稳送走；
+4. **手滑捞回来**：拉错了不慌，弹窗「已拉黑」里点一下「放回来」，原生 Unblock 秒级放生。
+
+详细图文指南见 [docs/USAGE.md](docs/USAGE.md) 或 [网页版使用指南](https://feedsieve.win/guide)。
+
+---
+
+## 安装方式
+
+| 安装途径 | 说明与步骤 |
+|---|---|
+| **Chrome 应用商店（强烈推荐）** | 直达 [Chrome 商店页面](https://chromewebstore.google.com/detail/feedsieve/amhdjglnonjaoenddnifpnljgmocfdph) 点击「添加至 Chrome」，自动接收后续版本更新 |
+| **Edge / Brave 等 Chromium 浏览器** | 直接访问上方 Chrome 商店链接，提示「允许来自其他商店的扩展」后点添加即可，无需额外步骤 |
+| **GitHub Releases** | 从 [Releases 页面](https://github.com/realchendahuang/feedsieve/releases) 下载 `feedsieve-*-chrome.zip` 解压 → 访问 `chrome://extensions` 开启开发者模式 → 点击「加载已解压的扩展程序」 |
+| **从源码自行构建** | 见下方本地开发指南（需要 Node ≥ 22 与 pnpm） |
+
+---
+
+## 系统工作流程
 
 ```text
-x.com
+x.com 页面
   │
-  ├── X Reader Adapter ──> FeedItem
-  │                           │
-  │                           v
-  │                      Safety Policy
-  │                 ┌─────────┼─────────┐
-  │                 │         │         │
-  │          Community   Manual mark   Weak evidence
-  │                 │
-  │            黄框标注（带理由，不隐藏）
-  │                 │
-  │            待拉黑列表（持久，可增删）
-  │                 │
-  └── X Action Adapter <── Block Queue（用户按下「一键拉黑」）
-                            │
-                      原生 Block / Unblock
-                      全端生效 + 阻断互动
+  ├── [MAIN World] XHR Bridge ──> 拦截公开 GraphQL 响应 (解析 rest_id / handle)
+  │                                    │
+  │                                    ▼
+  │                      [ISOLATED World] 检测流水线
+  │                 ┌──────────────────┼──────────────────┐
+  │                 ▼                  ▼                  ▼
+  │          社区签名黑名单      远程订阅词库包       SimHash 模糊指纹
+  │                 │                  │                  │
+  │                 └──────────────────┼──────────────────┘
+  │                                    │
+  │                      selfHandle 自身账号绝对豁免
+  │                      个人关注列表与白名单一票否决
+  │                                    │
+  │                           黄框标注（明牌贴理由，内容不藏）
+  │                                    │
+  │                           待拉黑池（持久化安全队列）
+  │                                    │
+  └── 用户按下「一键批量拉黑」 <─────────────┘
+          │
+          ▼
+     [Block Queue 引擎]
+          │
+     24h 滚动预算门控 (400发子弹限额)
+     拟人化泊松抖动 (300ms ~ 1200ms)
+     遭遇 429 自动装死熔断挂起
+          │
+          ▼
+     调用 X 内部 Block 端点 (全端同步消失 + 物理阻断互动)
 ```
 
-### 判断来源分层
+---
 
-- **Layer 1 — 用户明确动作**：主动「标记垃圾并拉黑」是最高质量判断；扩展漏识别时始终有入口。
-- **Layer 2 — 社区名单**：公开名单命中即黄框；只有至少 3 个独立标记且没有抢救票的账号能进入批量候选。
-- **Layer 3 — 本地词库与弱证据复核**：关键词命中给人工确认黄框，永不自动进入批量动作、也不回灌社区；相似内容、可疑域名只在「彻底」档提示复核。
-- **本地保护层**：关注列表和个人白名单优先级最高，自动从一切清理中排除。
+## 本地开发与贡献
 
-批量拉黑动作走持久化队列，绝不做 `for (...) click()`。架构边界见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)，X 原生操作见 [`docs/X_ACTION_ADAPTER.md`](docs/X_ACTION_ADAPTER.md)。
+本项目采用 Monorepo 架构管理：
 
-> [!WARNING]
-> **批量拉黑请节制。** FeedSieve 走的是你已登录 X 会话的内部 Block 接口，和手动点屏蔽是同一条请求。X 不公布每日上限，但社区实测大约每天 400–500 个之后容易被强制登出或要求验证。扩展默认按 400/24h 自动停，剩余队列会留到你下次点继续。这不是永久封号，但连续硬打会把临时锁定拖长。大名单先入队，不要指望一个晚上跑完。策略细节见 [`docs/BLOCK_SAFETY.md`](docs/BLOCK_SAFETY.md)。
+| 模块路径 | 职责与技术栈 |
+|---|---|
+| `apps/extension` | 扩展本体：采用 **WXT + React 19 + TypeScript**，纯 Manifest V3 架构 |
+| `apps/community-api` | 社区后端：**Cloudflare Workers + Hono + D1 + R2**，支持 Ed25519 签名分发 |
+| `apps/admin` | 维护后台：React + Tailwind，受 Cloudflare Access 身份断言保护 |
+| `packages/detector` | 独立检测器纯逻辑与金标测试语料库（Golden Corpus） |
+| `packages/block-queue` | 具备自适应退避与熔断特性的拉黑队列状态机 |
+| `packages/x-adapter` | X 页面 DOM/网络读取与原生动作适配层 |
+| `packages/community-lists`| 共享的社区名单序列化、解析与 Ed25519 验签契约 |
+| `community/` | 规范的 YAML 名单源文件、Schema 与每日镜像快照 |
 
-## 社区名单，晒在阳光下
-
-> **Open Code + Open Rules + Open Lists + Open Governance**
-
-- 每个安装对每个账号只有一张当前票，`净票数 = 拉黑票 − 误标票`，净票数达到 3 自动进入最终名单，低于 3 自动退出。
-- 维护者通过受 Cloudflare Access 保护的 [React 管理后台](apps/admin)维护草稿、显式发布或回退条目。
-- **YAML for humans, JSON for machines**：[`community/lists/blocklist.yaml`](community/lists/blocklist.yaml) 供审计 / Diff / Fork；[`community/lists/official.json`](community/lists/official.json) + [`community/lists/manifest.json`](community/lists/manifest.json) 供扩展下载与校验。
-- 扩展刷 X 时**零实时请求**：快照在本地建索引，滚动时间线不逐号查询服务器。
-- **误伤有解药**：社区「验证正常」白名单（净抢救票 ≥3，与黑名单镜像）随签名快照一并下发，命中即一票豁免；另有维护者人工筛选的[推荐白名单](community/lists/whitelist.yaml)（含博主简介），两处白名单账号永不标注。想进推荐白名单？填 [Issue 模板「推荐白名单申请」](.github/ISSUE_TEMPLATE/whitelist-request.yml)，仓库所有者手动拉取复核后入册。
-- **打野排位**：拉黑按共识击杀计分，周赛季排名公开可看；玩法见 [`docs/HUNTING.md`](docs/HUNTING.md)。
-
-完整机制与字段见 [`community/README.md`](community/README.md) 与 [`docs/OPEN_SOURCE_GOVERNANCE.md`](docs/OPEN_SOURCE_GOVERNANCE.md)。
-
-## 隐私
-
-- 判断优先在本地完成；社区上报仅限 handle / 分类 / 话术指纹哈希 / 外链域名与拉黑时的判定材料（命中那条推文的原文、昵称、简介——均为该账号公开发布的内容，用于反滥用分析与纠错），以及你在关键词页主动提交的短语（匿名，进人工审阅），绝无浏览历史。
-- 拉黑通过你已登录 X 会话的内部 Block 接口执行，FeedSieve 服务器碰不到你的 X 账号。
-- 自定义关键词、白名单、统计只存在本机（备份文件除外，见[隐私政策](PRIVACY.md)）。
-
-双语隐私政策：[PRIVACY.md](PRIVACY.md)。
-
-## 更新日志
-
-- 完整版本历史：[CHANGELOG.md](CHANGELOG.md)
-- 各版本详细工程记录：[docs/RELEASES.md](docs/RELEASES.md)
-- 二进制产物：[GitHub Releases](https://github.com/realchendahuang/feedsieve/releases)
-
-## 路线图
-
-当前：v0.8.x 已上架 Chrome 应用商店，社区名单、行业词库、维护后台、名单公示页、打野排位赛均已上线（最新功能随各版本陆续推送，见更新日志）。
-
-- [x] v0.1 能真正拉黑 · v0.2 社区名单闭环 · v0.4 / 0.5 垃圾网络识别 · v0.6 今日战报与分享 · v0.7 商店上架与词库生态 · v0.8 批量拉黑安全预算与公示申请
-- [ ] Optional AI（最后一层增强，不是基础依赖）
-
-完整路线见 [`docs/ROADMAP.md`](docs/ROADMAP.md)，长期定位见 [`docs/VISION.md`](docs/VISION.md)，品牌语言见 [`docs/BRAND.md`](docs/BRAND.md)，打野玩法见 [`docs/HUNTING.md`](docs/HUNTING.md)。
-
-## 参与贡献
-
-欢迎 Issue 反馈漏识别 / 误标，提交垃圾话术样本与规则建议，以及 X DOM 兼容修复、UI / UX 改进。
+### 常用命令
 
 ```sh
 git clone https://github.com/realchendahuang/feedsieve.git
 cd feedsieve
 pnpm install
-git config core.hooksPath .githooks   # 启用 pre-push 本地质量门禁
+git config core.hooksPath .githooks     # 启用本地 pre-push 质量门禁
+
+pnpm verify                   # 执行全量质量门禁（Lint + Typecheck + 全量单测 + 扩展构建）
+pnpm build:extension          # 编译扩展，产物位于 apps/extension/.output/chrome-mv3
+pnpm keyword-packs:build      # 由公开 YAML 词库构建签名官方词库 JSON
 ```
 
-PR 与 push 由 GitHub Actions 验证（`.github/workflows/verify.yml`：lint / 词库校验 / typecheck / 测试 / 扩展构建 / 依赖审计）；pre-push 钩子执行 `pnpm verify`（lint + 词库校验 + typecheck + 全部测试 + community-api workerd 测试 + 扩展构建）作为提交前的本地门禁。贡献规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+贡献准则见 [`CONTRIBUTING.md`](CONTRIBUTING.md)，架构细节见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
 
-## 本地开发
-
-| 目录 | 内容 |
-| --- | --- |
-| `packages/detector` | 检测器纯逻辑，可独立单测 |
-| `packages/x-adapter` | X 页面读取与原生动作适配 |
-| `packages/block-queue` | 持久化拉黑队列 |
-| `packages/community-lists` | 社区名单消费协议 |
-| `apps/extension` | WXT + React 19 扩展本体（Manifest V3） |
-| `apps/community-api` | Cloudflare Workers + Hono + D1 社区后端 |
-| `apps/admin` | React + Tailwind 维护后台 |
-| `community/` | YAML 名单、词库源、Schema、快照镜像 |
-
-常用命令：
-
-```sh
-pnpm verify                 # lint + 词库校验 + typecheck + 全部测试 + 扩展构建
-pnpm build:extension        # 构建扩展，产物在 apps/extension/.output/chrome-mv3
-pnpm keyword-packs:build    # 由公开词库源构建官方词库 JSON
-```
-
-技术栈：WXT · React 19 · TypeScript · Manifest V3 · Vitest · Cloudflare Workers + Hono + D1 + R2（E2E 层 Playwright 规划中，尚未引入）。
+---
 
 ## Star History
 
@@ -195,6 +211,8 @@ pnpm keyword-packs:build    # 由公开词库源构建官方词库 JSON
   </picture>
 </p>
 
-## License
+---
 
-[MIT](LICENSE)
+## 开源许可
+
+本项目依据 [MIT License](LICENSE) 开源。

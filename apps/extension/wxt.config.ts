@@ -19,7 +19,7 @@ export default defineConfig({
   manifest: (env) => ({
     name: 'FeedSieve',
     short_name: 'FeedSieve',
-    description: 'X 赛博清洁工：黄框标注垃圾账号，一键批量真拉黑。标注永不隐藏内容。',
+    description: '用了福滤娃，评论区不骚了，也不黑了。X（Twitter）垃圾账号清理工具：黄框标出，一键原生拉黑，全端同步消失。',
     permissions: ['storage', 'sidePanel'],
     side_panel: {
       default_path: 'popup.html',

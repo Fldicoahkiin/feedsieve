@@ -89,16 +89,18 @@ export default function GuidePage() {
 
       <h2 id="safety" className="mt-10 scroll-mt-20 text-xl font-bold">批量拉黑的安全边界</h2>
       <p className="mt-3 text-sm leading-relaxed">
-        拉黑走你的 X 登录会话，与手动点屏蔽是同一条请求。队列内置 <strong>400 条 / 24 小时</strong>滚动额度，用尽自动暂停（可选择继续）；连续
-        429 触发风暴降级（暂停 + 预算砍半），认证失效当天额度清零。大名单请让它分几天跑完，不要指望一个晚上清零。
+        拉黑走你浏览器里已登录的 X 会话，与手动点屏蔽同一条请求。推特天天治不了水军，但对正常用户拉黑频次抓得极严。队列内置 <strong>400 发子弹 / 24 小时</strong>滚动配额，用尽自动暂停；连续 429 触发自动装死休眠熔断，保护账号不被风控。大名单请分几天跑完，别指望一个晚上把全网黄推清零。
       </p>
 
       <h2 id="faq" className="mt-10 scroll-mt-20 text-xl font-bold">常见问题</h2>
       <p className="mt-3 text-sm leading-relaxed">
-        <strong>为什么是拉黑，而不是隐藏？</strong>本地隐藏只骗过你这一个浏览器；X 原生 Block 全端生效，被拉黑的号再也无法回复 / @ / 关注你。
+        <strong>为什么是拉黑，不是本地隐藏？</strong>本地隐藏纯属鸵鸟战术，只骗过这一个电脑屏幕，手机端照常骑脸；X 原生 Block 是全端同步清空，掐断一切骚扰。
       </p>
       <p className="mt-2 text-sm leading-relaxed">
-        <strong>需要 X 开发者 API 吗？</strong>不需要，拉黑全程在你已登录的 X 会话内完成，FeedSieve 服务器碰不到你的 X 账号。
+        <strong>会封我自己的推特账号吗？</strong>我们比你更怕被封号：内置 400 发子弹限额、拟人化时间抖动，遭遇 429 自动装死熔断，绝不拿大号去试探风控。
+      </p>
+      <p className="mt-2 text-sm leading-relaxed">
+        <strong>需要 X 开发者 API 吗？</strong>不需要，拉黑全程在你已登录的 X 会话内完成，FeedSieve 服务器连你的密码长什么样都不知道。
       </p>
       <p className="mt-2 text-sm leading-relaxed">
         <strong>推文会被上传吗？</strong>不会，推文原文永不出设备；社区上报只含账号名、分类、话术指纹哈希与外链域名。

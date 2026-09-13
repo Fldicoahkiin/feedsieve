@@ -5,8 +5,8 @@ import HomePage from '@/site/pages/HomePage';
 export const Route = createFileRoute('/_shell/')({
   head: () =>
     pageHead({
-      title: '福滤娃 FeedSieve',
-      description: '开源的 X（Twitter）垃圾账号清理扩展：高置信垃圾账号黄框标注，一键原生拉黑，全端同步消失。',
+      title: '福滤娃 FeedSieve · 用了福滤娃，评论区不骚了，也不黑了',
+      description: '用了福滤娃，评论区不骚了，也不黑了。开源的 X（Twitter）垃圾账号清理工具：黄推一眼标出，真拉黑全端同步，误杀随时可救。',
       path: '/',
     }),
   component: HomePage,
