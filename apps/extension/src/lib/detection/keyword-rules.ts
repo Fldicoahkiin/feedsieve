@@ -373,9 +373,9 @@ function normalizeSettings(value: unknown): KeywordRuleSettings {
           ),
         ]
       : null;
-  const defaultPresent = DEFAULT_SUBSCRIBED_CATEGORY_IDS.filter((id) =>
-    BUNDLED_KEYWORD_PACK_CATALOG.packs.some((pack) => pack.id === id),
-  );
+  // Defaults must not depend on an asynchronously loaded catalog. With a valid
+  // remote snapshot, the bundled catalog may remain empty for the entire session.
+  const defaultPresent = DEFAULT_SUBSCRIBED_CATEGORY_IDS;
   const subscribedCategoryIds = hasCurrentSubscriptionDefaults
     ? (storedSubscribedRaw ?? [])
     : storedSubscribedRaw

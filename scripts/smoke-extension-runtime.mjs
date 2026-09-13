@@ -15,7 +15,7 @@ assert(
 const fixture = (handle, text) =>
   `<div data-testid="cellInnerDiv" id="${handle}"><article data-testid="tweet"><div data-testid="User-Name"><a href="/${handle}"><span>测试用户</span></a><a href="/${handle}"><span>@${handle}</span></a></div><a href="/${handle}/status/1720000000000000000"><time>now</time></a><div data-testid="tweetText">${text}</div><div role="group"><button data-testid="like">Like</button></div></article></div>`;
 
-async function run(degraded) {
+async function run(degraded, remoteCached = false) {
   const temp = mkdtempSync(join(tmpdir(), 'feedsieve-mv3-'));
   const extension = join(temp, 'extension');
   cpSync(source, extension, { recursive: true });
@@ -36,10 +36,23 @@ async function run(degraded) {
       // eslint-disable-next-line no-undef
       await chrome.storage.local.clear();
     });
+    if (remoteCached) {
+      const body = readFileSync(join(extension, 'community/keyword-packs/official.json'), 'utf8');
+      await worker.evaluate(async (body) => {
+        // eslint-disable-next-line no-undef
+        await chrome.storage.local.set({
+          keywordPacksSnapshotV2: {
+            pack_version: JSON.parse(body).pack_version,
+            body,
+            synced_at: Date.now(),
+          },
+        });
+      }, body);
+    }
     await context.route('https://x.com/**', (route) =>
       route.fulfill({
         contentType: 'text/html; charset=utf-8',
-        body: `<!doctype html><html><body><main>${fixture('literalcase', '全国空降')}${fixture('variantcase', '全國空降')}${fixture('normalcase', '今天去公园散步，天气很好。')}</main></body></html>`,
+        body: `<!doctype html><html><body><main>${fixture('literalcase', '全国空降')}${fixture('variantcase', '全國空降')}${fixture('screenshotcase', '应该没人比我👆玩的开了吧🍇🛶我福不黑不信你看 1789266318520')}${fixture('normalcase', '今天去公园散步，天气很好。')}</main></body></html>`,
       }),
     );
     const page = await context.newPage();
@@ -62,6 +75,7 @@ async function run(degraded) {
       writeFileSync(variantPath, variants);
     }
     await page.waitForSelector('#variantcase .fs-badge', { timeout: 30_000 });
+    await page.waitForSelector('#screenshotcase .fs-badge');
     assert.equal(await page.locator('#normalcase .fs-badge').count(), 0);
     const stored = await worker.evaluate(async () => {
       // eslint-disable-next-line no-undef
@@ -73,10 +87,10 @@ async function run(degraded) {
           .map(([key, v]) => ({ key, version: v.version })),
       };
     });
-    assert.equal(stored.bundles.length, 3);
+    assert.equal(stored.bundles.length, remoteCached ? 2 : 3);
     assert(stored.bundles.every((v) => v.version === manifest.version));
     assert(
-      !stored.keys.includes('keywordPacksSnapshotV2'),
+      stored.keys.includes('keywordPacksSnapshotV2') === remoteCached,
       'Offline bundle must not masquerade as remote sync',
     );
     assert(
@@ -85,10 +99,15 @@ async function run(degraded) {
     );
     await page.reload();
     await page.waitForSelector('#variantcase .fs-badge');
+    await page.waitForSelector('#screenshotcase .fs-badge');
     assert.equal(await page.locator('#normalcase .fs-badge').count(), 0);
     console.log(
       JSON.stringify({
-        scenario: degraded ? 'missing-variant-recovery' : 'offline-cold-and-warm-start',
+        scenario: remoteCached
+          ? 'remote-cache-without-settings'
+          : degraded
+            ? 'missing-variant-recovery'
+            : 'offline-cold-and-warm-start',
         version: manifest.version,
         bundles: stored.bundles,
         passed: true,
@@ -101,3 +120,5 @@ async function run(degraded) {
 }
 await run(false);
 await run(true);
+
+await run(false, true);

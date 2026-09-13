@@ -19,6 +19,9 @@ function makeApi() {
     },
     storage: {
       local: {
+        remove: vi.fn(async (key: string) => {
+          delete storage[key];
+        }),
         get: vi.fn(async (key: string) => ({ [key]: storage[key] })),
         set: vi.fn(async (values: Record<string, unknown>) => {
           Object.assign(storage, values);
@@ -131,3 +134,45 @@ it('storage quota failure does not discard successfully read packaged data', asy
     log.mockRestore();
   }
 });
+
+it.each([
+  ['no saved settings', undefined, ['adult_gray_traffic', 'crypto_giveaway_scams']],
+  [
+    'v3 defaults',
+    { subscriptionDefaultsVersion: 3, subscribedCategoryIds: ['adult_gray_traffic'] },
+    ['adult_gray_traffic', 'crypto_giveaway_scams'],
+  ],
+  ['explicitly disabled v3', { subscriptionDefaultsVersion: 3, subscribedCategoryIds: [] }, []],
+  ['explicitly disabled v4', { subscriptionDefaultsVersion: 4, subscribedCategoryIds: [] }, []],
+])(
+  'remote-cached browser startup preserves %s independently of unloaded bundle',
+  async (_label, settings, expected) => {
+    const { readFileSync } = await import('node:fs');
+    const body = readFileSync('community/keyword-packs/official.json', 'utf8');
+    storage.keywordPacksSnapshotV2 = {
+      pack_version: JSON.parse(body).pack_version,
+      body,
+      synced_at: Date.now(),
+    };
+    if (settings !== undefined) storage.keywordRulesV1 = settings;
+    const { getKeywordPackCatalog, BUNDLED_KEYWORD_PACK_CATALOG } =
+      await import('../detection/keyword-packs');
+    const { getKeywordRuleSettings, createKeywordHeuristics } =
+      await import('../detection/keyword-rules');
+    const catalog = await getKeywordPackCatalog();
+    expect(BUNDLED_KEYWORD_PACK_CATALOG.packs).toEqual([]);
+    const effective = await getKeywordRuleSettings();
+    expect(effective.subscribedCategoryIds).toEqual(expected);
+    const rules = createKeywordHeuristics(effective, catalog);
+    if (expected.length) {
+      const match = rules.find((r) => r.id === 'keyword:official:adult-fu-not-black');
+      expect(
+        match?.check({
+          handle: 'SenaBeenelsh',
+          text: '应该没人比我👆玩的开了吧🍇🛶我福不黑不信你看\n1789266318520',
+        }),
+      ).toContain('我福不黑');
+    } else expect(rules).toHaveLength(0);
+    expect(api.runtime.sendMessage).not.toHaveBeenCalled();
+  },
+);

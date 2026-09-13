@@ -5,6 +5,14 @@
 - 每个版本的详细工程记录见 [`docs/RELEASES.md`](docs/RELEASES.md)。
 - 二进制产物见 [GitHub Releases](https://github.com/realchendahuang/feedsieve/releases)；正式用户请从 [Chrome 应用商店](https://chromewebstore.google.com/detail/feedsieve/amhdjglnonjaoenddnifpnljgmocfdph)接收更新。
 
+## [0.9.2] — 2026-09-13
+
+### 修复升级后官方规则全部未启用
+
+- 默认词库订阅不再依赖异步随包目录；已有远端词库缓存、没有显式关键词设置时，正确启用默认订阅。
+- 保留用户明确关闭全部词库的设置；旧版订阅迁移也不再受随包目录加载顺序影响。
+- 加入真实截图话术与“远端缓存存在、设置缺失”的 Chromium 启动回归测试，补齐 0.9.1 只覆盖无缓存冷启动的验收缺口。
+
 ## [0.9.1] — 2026-09-13
 
 ### 修复检测数据加载
