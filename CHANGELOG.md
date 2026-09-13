@@ -21,8 +21,9 @@
 
 ### 后端
 
-- D1 迁移 `0025_report_detection_evidence.sql` 保存 `rule_id` 与 `signal_ids`；Worker 与签名词包 `2026.09.13.2` 已先行部署。
-- 全量门禁通过：根测试 604/604、Community API 191/191，lint、类型检查、词包一致性、扩展与 Worker 生产构建通过。
+- D1 迁移 `0025_report_detection_evidence.sql` 保存 `rule_id` 与 `signal_ids`；Worker `8d72fe78-c6ba-470a-91bc-ffc5d20dded6` 与签名词包 `2026.09.13.2` 已部署。
+- 修复干净 checkout 缺少 TanStack 路由表导致的 CI 失败；升级 Nodemailer 与 Cloudflare 工具链，依赖审计清零。
+- 全量门禁通过：根测试 604/604、Community API 191/191，lint、类型检查、词包一致性、扩展与 Worker 生产构建、依赖审计通过。
 
 ## [0.8.4] — 2026-09-12
 
