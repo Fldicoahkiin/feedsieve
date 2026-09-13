@@ -1,5 +1,6 @@
 import { validateReport, type ValidReport } from './lib/validate';
 import { hashIp } from './lib/hash';
+import { nowSeconds, utcToday } from './lib/time';
 import { recordHealthObservations, type HealthObservation } from './lib/account-health';
 import {
   installationHash,
@@ -29,35 +30,38 @@ export function effectiveDailyLimit(baseLimit: number, trust: number): number {
   return Math.max(POLICY.minDailyLimit, Math.round(baseLimit * trust));
 }
 
-/** 公开政策快照（/v1/policy 与 manifest 内嵌；与 community/policy/v3.yaml 对应） */
+/** 公开政策快照（/v1/policy 与 manifest 内嵌；与 community/policy/v3.yaml 对应）。
+ *  纯静态字面量，模块级冻结一份，roster 组装 / manifest 生成按引用复用。 */
+const PUBLIC_POLICY = Object.freeze({
+  version: 3,
+  blocklist: {
+    formula: 'block_votes - false_positive_votes',
+    min_net_votes: POLICY.communityNetThreshold,
+    one_current_vote_per_installation: true,
+  },
+  limits: {
+    daily_report_base: POLICY.dailyReportLimit,
+    daily_rescue_base: POLICY.rescueDailyLimit,
+    daily_min: POLICY.minDailyLimit,
+    max_batch: POLICY.maxBatch,
+    daily_ip_report_limit: POLICY.dailyIpReportLimit,
+    daily_alias_cap: POLICY.aliasesPerDay,
+  },
+  reporter_trust: {
+    default: 1,
+    floor: POLICY.trustFloor,
+    burst_threshold: POLICY.trustBurstThreshold,
+    burst_decay: POLICY.trustDecay,
+  },
+  // 影子公式：已计算但不参与入榜，公开声明避免误解
+  consensus_v2: {
+    status: 'shadow',
+    formula: 'trust × installation maturity weighted net votes + temporal/evidence independence',
+  },
+});
+
 export function publicPolicy() {
-  return {
-    version: 3,
-    blocklist: {
-      formula: 'block_votes - false_positive_votes',
-      min_net_votes: POLICY.communityNetThreshold,
-      one_current_vote_per_installation: true,
-    },
-    limits: {
-      daily_report_base: POLICY.dailyReportLimit,
-      daily_rescue_base: POLICY.rescueDailyLimit,
-      daily_min: POLICY.minDailyLimit,
-      max_batch: POLICY.maxBatch,
-      daily_ip_report_limit: POLICY.dailyIpReportLimit,
-      daily_alias_cap: POLICY.aliasesPerDay,
-    },
-    reporter_trust: {
-      default: 1,
-      floor: POLICY.trustFloor,
-      burst_threshold: POLICY.trustBurstThreshold,
-      burst_decay: POLICY.trustDecay,
-    },
-    // 影子公式：已计算但不参与入榜，公开声明避免误解
-    consensus_v2: {
-      status: 'shadow',
-      formula: 'trust × installation maturity weighted net votes + temporal/evidence independence',
-    },
-  };
+  return PUBLIC_POLICY;
 }
 
 export interface ReportResult {
@@ -68,14 +72,6 @@ export interface ReportResult {
 
 export type ProcessBatchResult =
   { ok: true; results: ReportResult[] } | { ok: false; httpStatus: 400 | 413 | 429; error: string };
-
-function utcToday(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function nowSeconds(): number {
-  return Math.floor(Date.now() / 1000);
-}
 
 export async function processReportBatch(
   env: Cloudflare.Env,
