@@ -330,10 +330,12 @@ entries:
     name: "Roland.W"
     avatar_url: "https://pbs.twimg.com/profile_images/1911955967505219584/mbOS-TVy_400x400.jpg"
     note: "🇦🇺PhD ing @UQ_News | 医学与经济学 创造知识，创造价值 AIPC玩家，AI知识库 & GEO & 本地模型 🎁中文区First Check发起人 和 @ai_xiaomu @AdrianPunk115 一起帮助更多新人被看见"
-  - handle: scarletkc_
+  # issue #12：@scarletkc_ 改名 @ScarletKc（同号核验：头像图片 ID/昵称/简介一致，旧名已释放），补记数字 ID
+  - handle: scarletkc
     name: "KC"
     avatar_url: "https://pbs.twimg.com/profile_images/2059328812463304704/BXaYGP9k_400x400.jpg"
     note: "Indie developer building games & open-source tools Sharing AI news, model impressions, and opinions Occasional thoughts on life"
+    x_user_id: "756779273155858432"
   - handle: shancha103
     name: "山茶"
     avatar_url: "https://pbs.twimg.com/profile_images/1910508617406861312/4x-NC7Ek_400x400.jpg"
